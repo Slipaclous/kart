@@ -1,0 +1,2 @@
+['Material Output (OUTPUT_MATERIAL)', 'Principled BSDF (BSDF_PRINCIPLED)', 'Image Texture (TEX_IMAGE)', 'Mix (MIX)', 'Noise Texture (TEX_NOISE)', 'Color Ramp (VALTORGB)', 'Bump (BUMP)', 'Image Texture.001 (TEX_IMAGE)', 'Normal Map (NORMAL_MAP)']
+Mix Factor: 0.15000000596046448, in6: [1.0, 1.0, 1.0, 1.0], in7: [0.5, 0.5, 0.5, 1.0]
