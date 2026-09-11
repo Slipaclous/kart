@@ -37,3 +37,4 @@ npm run dev
 1. Lier le dépôt Git à Vercel.
 2. Ajouter la variable d'environnement `DATABASE_URL` (ex: Vercel Postgres, Neon, Supabase).
 3. Le script `postinstall` exécute automatiquement `prisma generate` lors du build.
+# kart
