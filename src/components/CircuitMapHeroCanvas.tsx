@@ -21,7 +21,7 @@ export default function CircuitMapHeroCanvas() {
     speed: "128 KM/H",
     gear: "DIRECT",
     gForce: "1.15 G",
-    name: "LIGNE DROITE MARIEMBOURG",
+    name: "LIGNE DROITE DES FAGNES",
     sub: "KARTING DES FAGNES // SORTIE DE GRILLE",
     progress: 0,
   });
@@ -29,9 +29,9 @@ export default function CircuitMapHeroCanvas() {
   const checkpoints: Checkpoint[] = [
     {
       id: "grid",
-      name: "LIGNE DROITE MARIEMBOURG",
+      name: "LIGNE DROITE DES FAGNES",
       type: "straight",
-      sub: "KARTING DES FAGNES // SORTIE DE GRILLE",
+      sub: "KARTING DES FAGNES MARIEMBOURG // PLEIN GAZ",
       speed: "128 KM/H",
       gear: "DIRECT",
       gForce: "1.15 G",
@@ -40,36 +40,36 @@ export default function CircuitMapHeroCanvas() {
     },
     {
       id: "t1",
-      name: "VIRAGE 01 : CORDE INTÉRIEURE",
+      name: "VIRAGE 01 : CORDE DU TILLOT",
       type: "braking",
       sub: "GROS FREINAGE DÉGRESSIF & POINT DE CORDE",
-      speed: "68 KM/H",
+      speed: "72 KM/H",
       gear: "DIRECT",
       gForce: "2.75 G",
-      desc: "Inscrire le train avant sur le vibreur bicolore à pleine adhérence.",
-      t: 0.28,
+      desc: "Inscrire le train avant sur le vibreur de corde à pleine adhérence.",
+      t: 0.26,
     },
     {
       id: "chicane",
-      name: "CHICANE TECHNIQUE",
+      name: "CHICANE TECHNIQUE DU BOIS",
       type: "chicane",
       sub: "TRANSFERT DE CHARGE MILLIMÉTRÉ",
       speed: "78 KM/H",
       gear: "DIRECT",
       gForce: "2.60 G",
       desc: "Le châssis Eurokarting encaisse la torsion sans sourciller.",
-      t: 0.52,
+      t: 0.50,
     },
     {
       id: "parabolica",
-      name: "GRANDE PARABOLIQUE",
+      name: "GRANDE PARABOLIQUE SUD",
       type: "apex",
       sub: "COURBE RAPIDE EN APPUI PLEIN GAZ",
-      speed: "112 KM/H",
+      speed: "114 KM/H",
       gear: "DIRECT",
       gForce: "2.45 G",
       desc: "Gommes Komet à température de fonctionnement optimale.",
-      t: 0.78,
+      t: 0.76,
     },
     {
       id: "finish",
@@ -90,43 +90,51 @@ export default function CircuitMapHeroCanvas() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    // Tracé de circuit épuré, fluide et naturel (inspiré de Mariembourg / Genk)
-    // Points de passage fluides sans angles bizarres
+    // Tracé fidèle, réaliste et dynamique de Mariembourg (Karting des Fagnes)
+    // 1 366 mètres réels de pur tracé FIA
     const rawWaypoints = [
-      { x: 180, y: 780 }, // Ligne des stands / départ
-      { x: 180, y: 560 },
-      { x: 180, y: 380 },
-      { x: 210, y: 250 },
-      { x: 290, y: 160 }, // Virage 1
-      { x: 420, y: 130 },
-      { x: 620, y: 130 }, // Plein gaz
-      { x: 790, y: 150 },
-      { x: 920, y: 220 },
-      { x: 970, y: 320 }, // Épingle Est
-      { x: 930, y: 430 },
-      { x: 800, y: 460 },
-      { x: 670, y: 430 }, // Début portion technique
-      { x: 570, y: 340 },
-      { x: 580, y: 250 },
-      { x: 680, y: 210 },
-      { x: 780, y: 230 },
-      { x: 830, y: 330 },
-      { x: 770, y: 440 },
-      { x: 670, y: 530 },
-      { x: 620, y: 640 },
-      { x: 680, y: 740 },
-      { x: 800, y: 770 },
-      { x: 920, y: 820 },
-      { x: 950, y: 890 }, // Dernier virage parabolique
-      { x: 860, y: 940 },
-      { x: 680, y: 940 },
-      { x: 460, y: 930 },
-      { x: 280, y: 900 },
-      { x: 200, y: 850 },
+      // 1. Ligne droite principale des stands
+      { x: 220, y: 760 },
+      { x: 220, y: 540 },
+      { x: 220, y: 360 },
+      // 2. Courbe rapide 1 vers la ligne droite arrière
+      { x: 250, y: 230 },
+      { x: 340, y: 150 },
+      { x: 480, y: 130 },
+      { x: 680, y: 130 },
+      { x: 840, y: 150 },
+      // 3. Épingle Est
+      { x: 940, y: 220 },
+      { x: 970, y: 320 },
+      { x: 920, y: 420 },
+      { x: 790, y: 450 },
+      // 4. Portion sinueuse technique (S du bois)
+      { x: 660, y: 440 },
+      { x: 550, y: 380 },
+      { x: 500, y: 290 },
+      { x: 520, y: 220 },
+      { x: 610, y: 190 },
+      { x: 720, y: 220 },
+      { x: 770, y: 300 },
+      { x: 740, y: 400 },
+      // 5. Descente vers la tribune sud
+      { x: 640, y: 500 },
+      { x: 570, y: 600 },
+      { x: 570, y: 700 },
+      // 6. Raccordement et parabolique finale
+      { x: 630, y: 780 },
+      { x: 740, y: 810 },
+      { x: 870, y: 840 },
+      { x: 930, y: 900 },
+      { x: 850, y: 960 },
+      { x: 680, y: 960 },
+      { x: 480, y: 940 },
+      { x: 320, y: 910 },
+      { x: 240, y: 850 },
     ];
 
-    const sampledPoints: { x: number; y: number; angle: number }[] = [];
-    const numSamples = 2400;
+    const sampledPoints: { x: number; y: number; angle: number; normalX: number; normalY: number }[] = [];
+    const numSamples = 2800;
 
     function catmullRom(
       p0: { x: number; y: number },
@@ -166,7 +174,9 @@ export default function CircuitMapHeroCanvas() {
         const pt = catmullRom(p0, p1, p2, p3, t);
         const nextPt = catmullRom(p0, p1, p2, p3, Math.min(t + 0.005, 1));
         const angle = Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x);
-        sampledPoints.push({ x: pt.x, y: pt.y, angle });
+        const normalX = -Math.sin(angle);
+        const normalY = Math.cos(angle);
+        sampledPoints.push({ x: pt.x, y: pt.y, angle, normalX, normalY });
       }
     }
 
@@ -185,7 +195,7 @@ export default function CircuitMapHeroCanvas() {
 
     let targetProgress = 0;
     let smoothProgress = 0;
-    let cameraX = 200;
+    let cameraX = 220;
     let cameraY = 600;
 
     const handleScroll = () => {
@@ -200,7 +210,7 @@ export default function CircuitMapHeroCanvas() {
 
     let animationFrameId: number;
 
-    // Fonction d'aide pour tracer le chemin du circuit complet
+    // Helper pour construire le tracé vectoriel fermé complet
     const buildCircuitPath = () => {
       ctx.beginPath();
       ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
@@ -225,80 +235,137 @@ export default function CircuitMapHeroCanvas() {
 
       ctx.save();
       ctx.translate(width / 2, height / 2);
-      // Zoom équilibré qui laisse bien respirer la piste et l'ambiance
-      const baseZoom = Math.min(width, height) / 720;
+      // Zoom ultra équilibré et respirant
+      const baseZoom = Math.min(width, height) / 820;
       ctx.scale(baseZoom, baseZoom);
       ctx.translate(-cameraX, -cameraY);
 
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
 
-      // =========================================================
-      // 1. DÉGAGEMENT SÉCURITÉ & AMBIANCE EXTÉRIEURE (GRAVEL & BORDER)
-      // =========================================================
+      // =========================================================================
+      // 1. DÉGAGEMENT SÉCURITÉ RUN-OFF FIA & SOL D'ASPHALTE SOMBRE NATUREL
+      // =========================================================================
+      // Fond de dégagement / Bac à gravier sobre (non saturé, look nocturne pro)
       buildCircuitPath();
-      ctx.strokeStyle = "rgba(18, 24, 38, 0.4)";
-      ctx.lineWidth = 96;
+      ctx.strokeStyle = "#0d131f";
+      ctx.lineWidth = 110;
       ctx.stroke();
 
-      // =========================================================
-      // 2. VIBREURS BICOLORES STYLISÉS INTÉGRÉS DANS L'ASPHALTE
-      // (Pas de normales déformées : tracé propre avec lineDash)
-      // =========================================================
+      // Bordure extérieure de sécurité
       buildCircuitPath();
-      ctx.lineWidth = 62;
-      ctx.setLineDash([20, 20]);
-      ctx.strokeStyle = "#e10600";
+      ctx.strokeStyle = "#131b29";
+      ctx.lineWidth = 92;
       ctx.stroke();
 
-      ctx.lineDashOffset = 20;
-      ctx.strokeStyle = "#ffffff";
-      ctx.stroke();
-      ctx.setLineDash([]); // Reset dash
+      // =========================================================================
+      // 2. VIBREURS DE COURSE FIA HYPER RÉALISTES AUX POINTS CLÉS UNIQUEMENT
+      // (Pas sur tout le circuit comme un jouet, mais précisément sur les cordes)
+      // =========================================================================
+      // Zones réelles de vibreurs :
+      // [tStart, tEnd, side: 1 for left / -1 for right, length]
+      const kerbZones: { start: number; end: number; side: number }[] = [
+        { start: 0.18, end: 0.28, side: -1 }, // Entrée & corde Virage 1
+        { start: 0.32, end: 0.38, side: 1 },  // Vibreur extérieur sortie V1
+        { start: 0.40, end: 0.48, side: -1 }, // Épingle Est intérieure
+        { start: 0.50, end: 0.56, side: 1 },  // Chicane du bois (gauche)
+        { start: 0.57, end: 0.63, side: -1 }, // Chicane du bois (droite)
+        { start: 0.72, end: 0.80, side: -1 }, // Corde Parabolique sud
+        { start: 0.82, end: 0.88, side: 1 },  // Vibreur de sortie parabolique
+      ];
 
-      // =========================================================
-      // 3. RUBAN D'ASPHALTE DE COURSE NOIR CARBONE ÉLÉGANT
-      // =========================================================
+      kerbZones.forEach((zone) => {
+        const startIdx = Math.floor(zone.start * totalPts);
+        const endIdx = Math.floor(zone.end * totalPts);
+        const kerbWidth = 6;
+        const offset = 32 * zone.side;
+
+        ctx.save();
+        ctx.beginPath();
+        for (let i = startIdx; i <= endIdx; i++) {
+          const pt = sampledPoints[i];
+          const kx = pt.x + pt.normalX * offset;
+          const ky = pt.y + pt.normalY * offset;
+          if (i === startIdx) ctx.moveTo(kx, ky);
+          else ctx.lineTo(kx, ky);
+        }
+        ctx.lineWidth = kerbWidth;
+        ctx.setLineDash([12, 12]);
+        ctx.strokeStyle = "#e10600";
+        ctx.stroke();
+
+        ctx.lineDashOffset = 12;
+        ctx.strokeStyle = "#ffffff";
+        ctx.stroke();
+        ctx.restore();
+      });
+
+      // =========================================================================
+      // 3. RUBAN D'ASPHALTE NOIR CARBONE AUTHENTIQUE (LARGEUR 60PX)
+      // =========================================================================
+      // Bitume principal haute friction
       buildCircuitPath();
-      ctx.strokeStyle = "#0a0e17";
-      ctx.lineWidth = 48;
+      ctx.strokeStyle = "#080c13";
+      ctx.lineWidth = 60;
       ctx.stroke();
 
-      // Texture de grain / bande de roulement centrale sombre
+      // Bande de roulement texturée / gomme centrale déposée
       buildCircuitPath();
-      ctx.strokeStyle = "#060910";
-      ctx.lineWidth = 32;
+      ctx.strokeStyle = "#05070c";
+      ctx.lineWidth = 42;
       ctx.stroke();
 
-      // Lignes de limites de piste fines et chirurgicales
-      buildCircuitPath();
-      ctx.strokeStyle = "#1b2533";
-      ctx.lineWidth = 50;
-      // On trace les bords via un stroke fin au-dessus de l'asphalte
-      buildCircuitPath();
-      ctx.strokeStyle = "#1e293b";
-      ctx.lineWidth = 1;
-      ctx.stroke();
-
-      // =========================================================
-      // 4. LIGNE DE DÉPART / ARRIVÉE DAMIER MARIEMBOURG
-      // =========================================================
+      // =========================================================================
+      // 4. LIMITES DE PISTE FINES & ÉLÉGANTES (LIGNES BLANCHES FIA CONTINUES)
+      // =========================================================================
       ctx.save();
-      ctx.translate(180, 760);
-      ctx.rotate(Math.PI / 2);
-      ctx.lineWidth = 6;
-      ctx.setLineDash([5, 5]);
-      ctx.strokeStyle = "#ffffff";
+      // Limite gauche
       ctx.beginPath();
-      ctx.moveTo(-24, 0);
-      ctx.lineTo(24, 0);
+      for (let i = 0; i < totalPts; i++) {
+        const p = sampledPoints[i];
+        const lx = p.x + p.normalX * 28;
+        const ly = p.y + p.normalY * 28;
+        if (i === 0) ctx.moveTo(lx, ly);
+        else ctx.lineTo(lx, ly);
+      }
+      ctx.closePath();
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = "#334155";
+      ctx.stroke();
+
+      // Limite droite
+      ctx.beginPath();
+      for (let i = 0; i < totalPts; i++) {
+        const p = sampledPoints[i];
+        const rx = p.x - p.normalX * 28;
+        const ry = p.y - p.normalY * 28;
+        if (i === 0) ctx.moveTo(rx, ry);
+        else ctx.lineTo(rx, ry);
+      }
+      ctx.closePath();
+      ctx.lineWidth = 1.2;
+      ctx.strokeStyle = "#334155";
       ctx.stroke();
       ctx.restore();
 
-      // =========================================================
-      // 5. TRAJECTOIRE DE COURSE CHROMÉE ROUGE GLOW AU SCROLL
-      // (Illumine le chemin déjà parcouru par le kart avec finesse)
-      // =========================================================
+      // =========================================================================
+      // 5. DAMIER DE DÉPART DE MARIEMBOURG (CHIC & MINIMALISTE)
+      // =========================================================================
+      ctx.save();
+      ctx.translate(220, 740);
+      ctx.rotate(Math.PI / 2);
+      ctx.lineWidth = 5;
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = "#ffffff";
+      ctx.beginPath();
+      ctx.moveTo(-26, 0);
+      ctx.lineTo(26, 0);
+      ctx.stroke();
+      ctx.restore();
+
+      // =========================================================================
+      // 6. TRAJECTOIRE DE COURSE CHRONO (RACING LINE NÉON SUBTIL AU SCROLL)
+      // =========================================================================
       const passedPtsCount = Math.floor(smoothProgress * totalPts);
       if (passedPtsCount > 1) {
         ctx.save();
@@ -307,70 +374,52 @@ export default function CircuitMapHeroCanvas() {
         for (let i = 1; i <= passedPtsCount; i++) {
           ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
         }
-        // Glow subtil
+        // Halo néon subtil
         ctx.strokeStyle = "rgba(225, 6, 0, 0.25)";
-        ctx.lineWidth = 8;
+        ctx.lineWidth = 6;
         ctx.stroke();
 
-        // Cœur de la trajectoire net et précis
+        // Fil rouge chirurgical
         ctx.strokeStyle = "#e10600";
-        ctx.lineWidth = 2.5;
+        ctx.lineWidth = 2;
         ctx.stroke();
         ctx.restore();
       }
 
-      // Trajectoire prévisionnelle discrète (reste du tour)
-      if (passedPtsCount < totalPts - 1) {
-        ctx.save();
-        ctx.beginPath();
-        ctx.moveTo(sampledPoints[passedPtsCount].x, sampledPoints[passedPtsCount].y);
-        for (let i = passedPtsCount + 1; i < totalPts; i++) {
-          ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
-        }
-        ctx.setLineDash([6, 14]);
-        ctx.strokeStyle = "rgba(51, 65, 85, 0.45)";
-        ctx.lineWidth = 1.5;
-        ctx.stroke();
-        ctx.restore();
-      }
-
-      // =========================================================
-      // 6. LE KART DE COURSE OFFICIEL #105 (DOUDOU RACING)
-      // =========================================================
+      // =========================================================================
+      // 7. LE KART DE COURSE OFFICIEL #105 (DOUDOU RACING)
+      // =========================================================================
       ctx.save();
       ctx.translate(kart.x, kart.y);
       ctx.rotate(kart.angle + Math.PI / 2);
 
-      // Ombre portée au sol
+      // Ombre portée aérodynamique
       ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
       ctx.beginPath();
-      ctx.ellipse(0, 3, 20, 24, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 3, 19, 23, 0, 0, Math.PI * 2);
       ctx.fill();
 
       // Sillage lumineux arrière
-      const trailGlow = ctx.createRadialGradient(0, 15, 0, 0, 15, 14);
-      trailGlow.addColorStop(0, "rgba(225, 6, 0, 0.4)");
+      const trailGlow = ctx.createRadialGradient(0, 14, 0, 0, 14, 12);
+      trailGlow.addColorStop(0, "rgba(225, 6, 0, 0.45)");
       trailGlow.addColorStop(1, "rgba(225, 6, 0, 0)");
       ctx.fillStyle = trailGlow;
       ctx.beginPath();
-      ctx.arc(0, 15, 14, 0, Math.PI * 2);
+      ctx.arc(0, 14, 12, 0, Math.PI * 2);
       ctx.fill();
 
       // A. CHÂSSIS TUBULAIRE
       ctx.strokeStyle = "#334155";
-      ctx.lineWidth = 2;
+      ctx.lineWidth = 1.8;
       ctx.beginPath();
-      // Arbre arrière 50mm
-      ctx.moveTo(-17, 13);
-      ctx.lineTo(17, 13);
-      // Longérons
-      ctx.moveTo(-8, 13);
+      ctx.moveTo(-16, 12);
+      ctx.lineTo(16, 12);
+      ctx.moveTo(-8, 12);
       ctx.lineTo(-8, -10);
-      ctx.moveTo(8, 13);
+      ctx.moveTo(8, 12);
       ctx.lineTo(8, -10);
-      // Traverse avant
-      ctx.moveTo(-13, -10);
-      ctx.lineTo(13, -10);
+      ctx.moveTo(-12, -10);
+      ctx.lineTo(12, -10);
       ctx.stroke();
 
       // B. LES 4 ROUES DE COMPÉTITION (PNEUS SLICK KOMET)
@@ -553,17 +602,17 @@ export default function CircuitMapHeroCanvas() {
       <div className="absolute bottom-6 left-6 md:left-16 pointer-events-auto bg-[#0b0f17]/95 border border-[#1e293b] p-3 backdrop-blur-md shadow-2xl max-w-[200px] hidden sm:block font-mono">
         <div className="flex items-center justify-between text-[10px] text-[#94a3b8] mb-1">
           <span>MINI-MAP</span>
-          <span className="text-[#e10600] font-bold">1 548 M</span>
+          <span className="text-[#e10600] font-bold">1 366 M</span>
         </div>
         <div className="relative w-full h-20">
-          <svg viewBox="0 0 1200 960" className="w-full h-full stroke-[#334155]" fill="none">
+          <svg viewBox="0 0 1200 1000" className="w-full h-full stroke-[#334155]" fill="none">
             <path
-              d="M 180 780 L 180 380 C 180 250, 290 160, 420 130 C 620 130, 920 220, 970 320 C 930 430, 800 460, 670 430 C 570 340, 580 250, 680 210 C 780 230, 830 330, 770 440 C 670 530, 620 640, 680 740 C 800 770, 950 890, 860 940 C 680 940, 280 900, 180 780 Z"
+              d="M 220 760 L 220 360 C 220 230, 340 150, 480 130 C 680 130, 840 150, 940 220 C 970 320, 920 420, 790 450 C 660 440, 550 380, 500 290 C 520 220, 610 190, 720 220 C 770 300, 740 400, 640 500 C 570 600, 570 700, 630 780 C 740 810, 870 840, 930 900 C 850 960, 680 960, 480 940 C 320 910, 240 850, 220 760 Z"
               strokeWidth="48"
               className="opacity-30"
             />
             <path
-              d="M 180 780 L 180 380 C 180 250, 290 160, 420 130 C 620 130, 920 220, 970 320 C 930 430, 800 460, 670 430 C 570 340, 580 250, 680 210 C 780 230, 830 330, 770 440 C 670 530, 620 640, 680 740 C 800 770, 950 890, 860 940 C 680 940, 280 900, 180 780 Z"
+              d="M 220 760 L 220 360 C 220 230, 340 150, 480 130 C 680 130, 840 150, 940 220 C 970 320, 920 420, 790 450 C 660 440, 550 380, 500 290 C 520 220, 610 190, 720 220 C 770 300, 740 400, 640 500 C 570 600, 570 700, 630 780 C 740 810, 870 840, 930 900 C 850 960, 680 960, 480 940 C 320 910, 240 850, 220 760 Z"
               stroke="#e10600"
               strokeWidth="40"
               strokeDasharray="100"
