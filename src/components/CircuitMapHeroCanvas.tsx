@@ -22,7 +22,7 @@ export default function CircuitMapHeroCanvas() {
     gear: "DIRECT",
     gForce: "1.15 G",
     name: "LIGNE DROITE MARIEMBOURG",
-    sub: "KARTING DES FAGNES // PLEIN GAZ 16 000 TR/MIN",
+    sub: "KARTING DES FAGNES // SORTIE DE GRILLE",
     progress: 0,
   });
 
@@ -36,7 +36,7 @@ export default function CircuitMapHeroCanvas() {
       gear: "DIRECT",
       gForce: "1.15 G",
       desc: "Sortie de grille en trombe. Moteur IAME hurlant à 16 000 tr/min.",
-      t: 0.08,
+      t: 0.05,
     },
     {
       id: "t1",
@@ -51,9 +51,9 @@ export default function CircuitMapHeroCanvas() {
     },
     {
       id: "chicane",
-      name: "CHICANE DE GENK",
+      name: "CHICANE TECHNIQUE",
       type: "chicane",
-      sub: "HOME OF CHAMPIONS // TRANSFERT DE CHARGE",
+      sub: "TRANSFERT DE CHARGE MILLIMÉTRÉ",
       speed: "78 KM/H",
       gear: "DIRECT",
       gForce: "2.60 G",
@@ -62,9 +62,9 @@ export default function CircuitMapHeroCanvas() {
     },
     {
       id: "parabolica",
-      name: "PARABOLIQUE DU RAIDILLON",
+      name: "GRANDE PARABOLIQUE",
       type: "apex",
-      sub: "COURBE RAPIDE EN APPUI // PNEUS KOMET",
+      sub: "COURBE RAPIDE EN APPUI PLEIN GAZ",
       speed: "112 KM/H",
       gear: "DIRECT",
       gForce: "2.45 G",
@@ -90,46 +90,43 @@ export default function CircuitMapHeroCanvas() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    // Définition de la piste (Circuit FIA Karting de Mariembourg / Genk profilé)
+    // Tracé de circuit épuré, fluide et naturel (inspiré de Mariembourg / Genk)
+    // Points de passage fluides sans angles bizarres
     const rawWaypoints = [
-      { x: 180, y: 780 },
-      { x: 180, y: 550 },
-      { x: 180, y: 350 },
-      { x: 210, y: 220 },
-      { x: 280, y: 150 },
-      { x: 390, y: 120 },
-      { x: 550, y: 120 },
-      { x: 720, y: 120 },
-      { x: 860, y: 150 },
-      { x: 960, y: 220 },
-      { x: 1010, y: 320 },
-      { x: 980, y: 420 },
-      { x: 890, y: 480 },
-      { x: 760, y: 480 },
-      { x: 650, y: 430 },
+      { x: 180, y: 780 }, // Ligne des stands / départ
+      { x: 180, y: 560 },
+      { x: 180, y: 380 },
+      { x: 210, y: 250 },
+      { x: 290, y: 160 }, // Virage 1
+      { x: 420, y: 130 },
+      { x: 620, y: 130 }, // Plein gaz
+      { x: 790, y: 150 },
+      { x: 920, y: 220 },
+      { x: 970, y: 320 }, // Épingle Est
+      { x: 930, y: 430 },
+      { x: 800, y: 460 },
+      { x: 670, y: 430 }, // Début portion technique
       { x: 570, y: 340 },
-      { x: 570, y: 260 },
-      { x: 640, y: 210 },
-      { x: 740, y: 210 },
-      { x: 820, y: 260 },
-      { x: 840, y: 340 },
-      { x: 790, y: 420 },
-      { x: 700, y: 500 },
-      { x: 620, y: 590 },
-      { x: 610, y: 680 },
-      { x: 670, y: 750 },
-      { x: 780, y: 770 },
-      { x: 900, y: 800 },
-      { x: 960, y: 860 },
-      { x: 900, y: 920 },
-      { x: 740, y: 930 },
-      { x: 520, y: 930 },
-      { x: 340, y: 910 },
-      { x: 220, y: 860 },
+      { x: 580, y: 250 },
+      { x: 680, y: 210 },
+      { x: 780, y: 230 },
+      { x: 830, y: 330 },
+      { x: 770, y: 440 },
+      { x: 670, y: 530 },
+      { x: 620, y: 640 },
+      { x: 680, y: 740 },
+      { x: 800, y: 770 },
+      { x: 920, y: 820 },
+      { x: 950, y: 890 }, // Dernier virage parabolique
+      { x: 860, y: 940 },
+      { x: 680, y: 940 },
+      { x: 460, y: 930 },
+      { x: 280, y: 900 },
+      { x: 200, y: 850 },
     ];
 
-    const sampledPoints: { x: number; y: number; angle: number; normalX: number; normalY: number }[] = [];
-    const numSamples = 2000;
+    const sampledPoints: { x: number; y: number; angle: number }[] = [];
+    const numSamples = 2400;
 
     function catmullRom(
       p0: { x: number; y: number },
@@ -167,12 +164,9 @@ export default function CircuitMapHeroCanvas() {
       for (let s = 0; s < stepsPerSegment; s++) {
         const t = s / stepsPerSegment;
         const pt = catmullRom(p0, p1, p2, p3, t);
-        const nextPt = catmullRom(p0, p1, p2, p3, Math.min(t + 0.01, 1));
+        const nextPt = catmullRom(p0, p1, p2, p3, Math.min(t + 0.005, 1));
         const angle = Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x);
-        // Vecteur normal unitaire (perpendiculaire à la piste)
-        const normalX = -Math.sin(angle);
-        const normalY = Math.cos(angle);
-        sampledPoints.push({ x: pt.x, y: pt.y, angle, normalX, normalY });
+        sampledPoints.push({ x: pt.x, y: pt.y, angle });
       }
     }
 
@@ -206,417 +200,295 @@ export default function CircuitMapHeroCanvas() {
 
     let animationFrameId: number;
 
+    // Fonction d'aide pour tracer le chemin du circuit complet
+    const buildCircuitPath = () => {
+      ctx.beginPath();
+      ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
+      for (let i = 1; i < sampledPoints.length; i++) {
+        ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
+      }
+      ctx.closePath();
+    };
+
     const render = () => {
-      smoothProgress += (targetProgress - smoothProgress) * 0.09;
+      smoothProgress += (targetProgress - smoothProgress) * 0.08;
 
       const totalPts = sampledPoints.length;
       const currentIdx = Math.min(Math.floor(smoothProgress * (totalPts - 1)), totalPts - 1);
       const kart = sampledPoints[currentIdx] || sampledPoints[0];
 
       // Caméra fluide centrée sur le kart
-      cameraX += (kart.x - cameraX) * 0.06;
-      cameraY += (kart.y - cameraY) * 0.06;
+      cameraX += (kart.x - cameraX) * 0.05;
+      cameraY += (kart.y - cameraY) * 0.05;
 
       ctx.clearRect(0, 0, width, height);
 
       ctx.save();
       ctx.translate(width / 2, height / 2);
-      const baseZoom = Math.min(width, height) / 580;
+      // Zoom équilibré qui laisse bien respirer la piste et l'ambiance
+      const baseZoom = Math.min(width, height) / 720;
       ctx.scale(baseZoom, baseZoom);
       ctx.translate(-cameraX, -cameraY);
 
-      // =========================================================
-      // 1. DÉGAGEMENT SABLE & GRAVIER (RUN-OFF ZONE HOMOLOGUÉE FIA)
-      // =========================================================
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
 
-      // Bande de sable/gravier large avec texture rugueuse
-      ctx.beginPath();
-      ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
-      for (let i = 1; i < totalPts; i++) {
-        ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
-      }
-      ctx.closePath();
-
-      // Zone de dégagement extérieure (Gravel trap)
-      ctx.strokeStyle = "#161b26";
-      ctx.lineWidth = 110;
-      ctx.stroke();
-
-      // Asphalte de sécurité secondaire (Run-off bitumé)
-      ctx.strokeStyle = "#0f1520";
-      ctx.lineWidth = 92;
+      // =========================================================
+      // 1. DÉGAGEMENT SÉCURITÉ & AMBIANCE EXTÉRIEURE (GRAVEL & BORDER)
+      // =========================================================
+      buildCircuitPath();
+      ctx.strokeStyle = "rgba(18, 24, 38, 0.4)";
+      ctx.lineWidth = 96;
       ctx.stroke();
 
       // =========================================================
-      // 2. VIBREURS BICOLORES DE COURSE INDÉPENDANTS (KERBS GAUCHE & DROITE)
+      // 2. VIBREURS BICOLORES STYLISÉS INTÉGRÉS DANS L'ASPHALTE
+      // (Pas de normales déformées : tracé propre avec lineDash)
       // =========================================================
-      // Vibreur Gauche (Extérieur/Intérieur selon virage)
-      ctx.save();
-      ctx.beginPath();
-      for (let i = 0; i < totalPts; i++) {
-        const p = sampledPoints[i];
-        const kx = p.x + p.normalX * 38;
-        const ky = p.y + p.normalY * 38;
-        if (i === 0) ctx.moveTo(kx, ky);
-        else ctx.lineTo(kx, ky);
-      }
-      ctx.closePath();
-      ctx.lineWidth = 10;
-      ctx.setLineDash([14, 14]);
+      buildCircuitPath();
+      ctx.lineWidth = 62;
+      ctx.setLineDash([20, 20]);
       ctx.strokeStyle = "#e10600";
       ctx.stroke();
-      ctx.lineDashOffset = 14;
+
+      ctx.lineDashOffset = 20;
       ctx.strokeStyle = "#ffffff";
       ctx.stroke();
-      ctx.restore();
-
-      // Vibreur Droit
-      ctx.save();
-      ctx.beginPath();
-      for (let i = 0; i < totalPts; i++) {
-        const p = sampledPoints[i];
-        const kx = p.x - p.normalX * 38;
-        const ky = p.y - p.normalY * 38;
-        if (i === 0) ctx.moveTo(kx, ky);
-        else ctx.lineTo(kx, ky);
-      }
-      ctx.closePath();
-      ctx.lineWidth = 10;
-      ctx.setLineDash([14, 14]);
-      ctx.strokeStyle = "#ffffff";
-      ctx.stroke();
-      ctx.lineDashOffset = 14;
-      ctx.strokeStyle = "#e10600";
-      ctx.stroke();
-      ctx.restore();
+      ctx.setLineDash([]); // Reset dash
 
       // =========================================================
-      // 3. RUBAN D'ASPHALTE DE COMPÉTITION NOIR PROFOND (68px)
+      // 3. RUBAN D'ASPHALTE DE COURSE NOIR CARBONE ÉLÉGANT
       // =========================================================
-      ctx.beginPath();
-      ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
-      for (let i = 1; i < totalPts; i++) {
-        ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
-      }
-      ctx.closePath();
-
-      // Bitume granuleux haute adhérence
-      ctx.strokeStyle = "#080b11";
-      ctx.lineWidth = 68;
+      buildCircuitPath();
+      ctx.strokeStyle = "#0a0e17";
+      ctx.lineWidth = 48;
       ctx.stroke();
 
-      // Lignes blanches continues de délimitation de piste (Track Limits FIA)
-      ctx.save();
-      // Limite gauche
-      ctx.beginPath();
-      for (let i = 0; i < totalPts; i++) {
-        const p = sampledPoints[i];
-        const lx = p.x + p.normalX * 33;
-        const ly = p.y + p.normalY * 33;
-        if (i === 0) ctx.moveTo(lx, ly);
-        else ctx.lineTo(lx, ly);
-      }
-      ctx.closePath();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#475569";
+      // Texture de grain / bande de roulement centrale sombre
+      buildCircuitPath();
+      ctx.strokeStyle = "#060910";
+      ctx.lineWidth = 32;
       ctx.stroke();
 
-      // Limite droite
-      ctx.beginPath();
-      for (let i = 0; i < totalPts; i++) {
-        const p = sampledPoints[i];
-        const rx = p.x - p.normalX * 33;
-        const ry = p.y - p.normalY * 33;
-        if (i === 0) ctx.moveTo(rx, ry);
-        else ctx.lineTo(rx, ry);
-      }
-      ctx.closePath();
-      ctx.lineWidth = 2;
-      ctx.strokeStyle = "#475569";
+      // Lignes de limites de piste fines et chirurgicales
+      buildCircuitPath();
+      ctx.strokeStyle = "#1b2533";
+      ctx.lineWidth = 50;
+      // On trace les bords via un stroke fin au-dessus de l'asphalte
+      buildCircuitPath();
+      ctx.strokeStyle = "#1e293b";
+      ctx.lineWidth = 1;
       ctx.stroke();
-      ctx.restore();
 
       // =========================================================
-      // 4. TRACES DE GOMME DE COURSE DANS LA TRAJECTOIRE (RACING GROOVE)
+      // 4. LIGNE DE DÉPART / ARRIVÉE DAMIER MARIEMBOURG
       // =========================================================
-      ctx.save();
-      ctx.beginPath();
-      ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
-      for (let i = 1; i < totalPts; i++) {
-        ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
-      }
-      ctx.closePath();
-      ctx.strokeStyle = "#030407";
-      ctx.lineWidth = 22;
-      ctx.stroke();
-      ctx.restore();
-
-      // Ligne médiane discontinue subtile
-      ctx.save();
-      ctx.lineWidth = 1.2;
-      ctx.setLineDash([16, 24]);
-      ctx.strokeStyle = "#1b2432";
-      ctx.stroke();
-      ctx.restore();
-
-      // =========================================================
-      // 5. MARQUAGES AU SOL : GRILLE DE DÉPART & DAMIER MARIEMBOURG
-      // =========================================================
-      // Ligne de départ / arrivée Damier
       ctx.save();
       ctx.translate(180, 760);
       ctx.rotate(Math.PI / 2);
-      ctx.lineWidth = 7;
-      ctx.setLineDash([7, 7]);
+      ctx.lineWidth = 6;
+      ctx.setLineDash([5, 5]);
       ctx.strokeStyle = "#ffffff";
       ctx.beginPath();
-      ctx.moveTo(-33, 0);
-      ctx.lineTo(33, 0);
+      ctx.moveTo(-24, 0);
+      ctx.lineTo(24, 0);
       ctx.stroke();
       ctx.restore();
 
-      // Emplacements de départ sur la grille (Boîtes de départ décalées)
-      const gridPositions = [
-        { x: 172, y: 730, pole: "P1" },
-        { x: 188, y: 700, pole: "P2" },
-        { x: 172, y: 670, pole: "P3" },
-        { x: 188, y: 640, pole: "P4" },
-      ];
-      ctx.save();
-      gridPositions.forEach((gp) => {
-        ctx.strokeStyle = "#334155";
-        ctx.lineWidth = 1.2;
-        ctx.strokeRect(gp.x - 6, gp.y - 10, 12, 20);
-        ctx.fillStyle = "#64748b";
-        ctx.font = "bold 6px monospace";
-        ctx.textAlign = "center";
-        ctx.fillText(gp.pole, gp.x, gp.y + 2);
-      });
-      ctx.restore();
-
-      // Panneaux de distance de freinage avant virage (100m, 50m)
-      const brakeBoards = [
-        { x: 140, y: 420, label: "100" },
-        { x: 140, y: 360, label: "50" },
-      ];
-      ctx.save();
-      brakeBoards.forEach((b) => {
-        ctx.fillStyle = "#ffffff";
-        ctx.fillRect(b.x - 8, b.y - 4, 16, 8);
-        ctx.fillStyle = "#000000";
-        ctx.font = "900 6px monospace";
-        ctx.textAlign = "center";
-        ctx.fillText(b.label, b.x, b.y + 2.5);
-      });
-      ctx.restore();
-
       // =========================================================
-      // 6. TRAJECTOIRE IDÉALE ILLUMINÉE (RACING LINE GLOW AU SCROLL)
+      // 5. TRAJECTOIRE DE COURSE CHROMÉE ROUGE GLOW AU SCROLL
+      // (Illumine le chemin déjà parcouru par le kart avec finesse)
       // =========================================================
       const passedPtsCount = Math.floor(smoothProgress * totalPts);
       if (passedPtsCount > 1) {
+        ctx.save();
         ctx.beginPath();
         ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
         for (let i = 1; i <= passedPtsCount; i++) {
           ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
         }
-        ctx.strokeStyle = "#e10600";
-        ctx.lineWidth = 4;
-        ctx.shadowColor = "#e10600";
-        ctx.shadowBlur = 12;
+        // Glow subtil
+        ctx.strokeStyle = "rgba(225, 6, 0, 0.25)";
+        ctx.lineWidth = 8;
         ctx.stroke();
-        ctx.shadowBlur = 0;
+
+        // Cœur de la trajectoire net et précis
+        ctx.strokeStyle = "#e10600";
+        ctx.lineWidth = 2.5;
+        ctx.stroke();
+        ctx.restore();
+      }
+
+      // Trajectoire prévisionnelle discrète (reste du tour)
+      if (passedPtsCount < totalPts - 1) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.moveTo(sampledPoints[passedPtsCount].x, sampledPoints[passedPtsCount].y);
+        for (let i = passedPtsCount + 1; i < totalPts; i++) {
+          ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
+        }
+        ctx.setLineDash([6, 14]);
+        ctx.strokeStyle = "rgba(51, 65, 85, 0.45)";
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+        ctx.restore();
       }
 
       // =========================================================
-      // 7. LE KART DE COURSE OFFICIEL #105 (DOUDOU RACING)
+      // 6. LE KART DE COURSE OFFICIEL #105 (DOUDOU RACING)
       // =========================================================
       ctx.save();
       ctx.translate(kart.x, kart.y);
       ctx.rotate(kart.angle + Math.PI / 2);
 
-      // Ombre portée au sol aérodynamique
-      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+      // Ombre portée au sol
+      ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
       ctx.beginPath();
-      ctx.ellipse(0, 3, 22, 26, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 3, 20, 24, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Traces de gomme fumante laissées par les pneus arrière sous l'accélération
-      const tyreSmoke = ctx.createRadialGradient(0, 16, 1, 0, 16, 18);
-      tyreSmoke.addColorStop(0, "rgba(225, 6, 0, 0.35)");
-      tyreSmoke.addColorStop(1, "rgba(225, 6, 0, 0)");
-      ctx.fillStyle = tyreSmoke;
+      // Sillage lumineux arrière
+      const trailGlow = ctx.createRadialGradient(0, 15, 0, 0, 15, 14);
+      trailGlow.addColorStop(0, "rgba(225, 6, 0, 0.4)");
+      trailGlow.addColorStop(1, "rgba(225, 6, 0, 0)");
+      ctx.fillStyle = trailGlow;
       ctx.beginPath();
-      ctx.arc(0, 16, 18, 0, Math.PI * 2);
+      ctx.arc(0, 15, 14, 0, Math.PI * 2);
       ctx.fill();
 
-      // A. CHÂSSIS TUBULAIRE EN ACIER CHROMOLYBDE
+      // A. CHÂSSIS TUBULAIRE
       ctx.strokeStyle = "#334155";
-      ctx.lineWidth = 2.2;
-      ctx.beginPath();
-      // Arbre arrière rigide de 50mm
-      ctx.moveTo(-18, 14);
-      ctx.lineTo(18, 14);
-      // Longérons principaux
-      ctx.moveTo(-9, 14);
-      ctx.lineTo(-9, -12);
-      ctx.moveTo(9, 14);
-      ctx.lineTo(9, -12);
-      // Traverse avant
-      ctx.moveTo(-14, -12);
-      ctx.lineTo(14, -12);
-      ctx.stroke();
-
-      // B. DISQUE DE FREIN ARRIÈRE VENTILÉ & ÉTRIER ROUGE
-      ctx.fillStyle = "#94a3b8";
-      ctx.fillRect(-6, 11, 2.5, 6);
-      ctx.fillStyle = "#e10600";
-      ctx.fillRect(-6.5, 10, 3.5, 2.5);
-
-      // C. BLOC MOTEUR IAME X30 À DROITE & ÉCHAPPEMENT
-      ctx.fillStyle = "#1e293b";
-      ctx.fillRect(8, 2, 7, 9);
-      ctx.fillStyle = "#64748b";
-      ctx.fillRect(9, 3, 5, 3);
-      // Échappement tubulaire cintré titane
-      ctx.strokeStyle = "#475569";
       ctx.lineWidth = 2;
       ctx.beginPath();
-      ctx.moveTo(11, 10);
-      ctx.lineTo(10, 19);
-      ctx.lineTo(5, 22);
+      // Arbre arrière 50mm
+      ctx.moveTo(-17, 13);
+      ctx.lineTo(17, 13);
+      // Longérons
+      ctx.moveTo(-8, 13);
+      ctx.lineTo(-8, -10);
+      ctx.moveTo(8, 13);
+      ctx.lineTo(8, -10);
+      // Traverse avant
+      ctx.moveTo(-13, -10);
+      ctx.lineTo(13, -10);
       ctx.stroke();
 
-      // D. LES 4 ROUES DE COMPÉTITION (PNEUS KOMET SLICK + JANTES MAGNÉSIUM)
+      // B. LES 4 ROUES DE COMPÉTITION (PNEUS SLICK KOMET)
       const drawWheel = (wx: number, wy: number, w: number, h: number) => {
-        ctx.fillStyle = "#0a0d14";
+        ctx.fillStyle = "#090d14";
         ctx.strokeStyle = "#1e293b";
         ctx.lineWidth = 0.8;
         ctx.fillRect(wx - w / 2, wy - h / 2, w, h);
         ctx.strokeRect(wx - w / 2, wy - h / 2, w, h);
-        // Jante magnésium dorée/bronze
-        ctx.fillStyle = "#92400e";
+        // Centre de jante magnésium
+        ctx.fillStyle = "#b45309";
         ctx.fillRect(wx - w / 4, wy - h / 4, w / 2, h / 2);
-        // Écrou de roue anodisé rouge
+        // Écrou rouge
         ctx.fillStyle = "#e10600";
         ctx.fillRect(wx - 1, wy - 1, 2, 2);
       };
 
-      drawWheel(-16, -12, 6, 11);
-      drawWheel(16, -12, 6, 11);
-      drawWheel(-19, 14, 8, 14);
-      drawWheel(19, 14, 8, 14);
+      drawWheel(-15, -11, 6, 10);
+      drawWheel(15, -11, 6, 10);
+      drawWheel(-18, 13, 8, 13);
+      drawWheel(18, 13, 8, 13);
 
-      // E. CARROSSERIE CIK-FIA OFFICIELLE
-      // Spoiler avant profilé
+      // C. CARROSSERIE CIK-FIA OFFICIELLE DOUDOU RACING
+      // Spoiler avant profilé rouge
       ctx.fillStyle = "#e10600";
       ctx.strokeStyle = "#ffffff";
       ctx.lineWidth = 0.8;
       ctx.beginPath();
-      ctx.moveTo(-14, -18);
-      ctx.lineTo(14, -18);
-      ctx.lineTo(16, -14);
-      ctx.lineTo(11, -12);
-      ctx.lineTo(-11, -12);
-      ctx.lineTo(-16, -14);
+      ctx.moveTo(-13, -16);
+      ctx.lineTo(13, -16);
+      ctx.lineTo(15, -12);
+      ctx.lineTo(10, -10);
+      ctx.lineTo(-10, -10);
+      ctx.lineTo(-15, -12);
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
 
-      // Pontons latéraux
+      // Pontons latéraux rouges
       ctx.fillStyle = "#e10600";
       ctx.beginPath();
-      ctx.moveTo(-15, -8);
-      ctx.lineTo(-11, -8);
-      ctx.lineTo(-11, 10);
-      ctx.lineTo(-15, 10);
+      ctx.moveTo(-14, -6);
+      ctx.lineTo(-10, -6);
+      ctx.lineTo(-10, 9);
+      ctx.lineTo(-14, 9);
       ctx.closePath();
       ctx.fill();
-      ctx.stroke();
 
       ctx.beginPath();
-      ctx.moveTo(11, -8);
-      ctx.lineTo(15, -8);
-      ctx.lineTo(15, 10);
-      ctx.lineTo(11, 10);
+      ctx.moveTo(10, -6);
+      ctx.lineTo(14, -6);
+      ctx.lineTo(14, 9);
+      ctx.lineTo(10, 9);
       ctx.closePath();
       ctx.fill();
-      ctx.stroke();
 
-      // Bandes racing blanches
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(-14, -2, 2, 8);
-      ctx.fillRect(12, -2, 2, 8);
-
-      // Naseau central avant blanc (Porte-numéro)
+      // Porte-numéro naseau avant blanc
       ctx.fillStyle = "#ffffff";
       ctx.beginPath();
-      ctx.moveTo(-5, -16);
-      ctx.lineTo(5, -16);
-      ctx.lineTo(6, -4);
-      ctx.lineTo(-6, -4);
+      ctx.moveTo(-5, -15);
+      ctx.lineTo(5, -15);
+      ctx.lineTo(6, -3);
+      ctx.lineTo(-6, -3);
       ctx.closePath();
       ctx.fill();
 
-      // Numéro officiel #105 de Doudou Racing
+      // Numéro officiel #105
       ctx.fillStyle = "#07090e";
       ctx.font = "900 6.5px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText("105", 0, -10);
+      ctx.fillText("105", 0, -9);
 
-      // F. VOLANT MÉPLAT & ÉCRAN MYCHRON
+      // Volant méplat et bloc MyChron
       ctx.strokeStyle = "#07090e";
       ctx.lineWidth = 1.8;
       ctx.beginPath();
-      ctx.arc(0, -3, 3.8, Math.PI * 0.1, Math.PI * 0.9);
+      ctx.arc(0, -2, 3.5, Math.PI * 0.1, Math.PI * 0.9);
       ctx.stroke();
       ctx.fillStyle = "#2563eb";
-      ctx.fillRect(-1.5, -4, 3, 1.8);
+      ctx.fillRect(-1.5, -3, 3, 1.6);
 
-      // G. SIÈGE BAQUET CARBONE TILLET & PILOTE CASQUÉ
-      ctx.strokeStyle = "#475569";
-      ctx.fillStyle = "#0c1017";
-      ctx.lineWidth = 1;
+      // Siège baquet Tillet carbone & pilote casqué
+      ctx.fillStyle = "#0a0e17";
+      ctx.strokeStyle = "#334155";
+      ctx.lineWidth = 0.8;
       ctx.beginPath();
-      ctx.ellipse(0, 5, 6.5, 7.5, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 5, 6, 7, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
 
       // Combinaison Alpinestars d'Edouard Godfroid
       ctx.fillStyle = "#e10600";
       ctx.beginPath();
-      ctx.ellipse(0, 4.5, 5.5, 3.5, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 4.5, 5, 3.2, 0, 0, Math.PI * 2);
       ctx.fill();
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(-5, 3, 2, 3);
-      ctx.fillRect(3, 3, 2, 3);
 
-      // Casque FIA Pro avec visière irisée
+      // Casque FIA officiel blanc avec bandeau rouge et visière cobalt
       ctx.fillStyle = "#ffffff";
       ctx.strokeStyle = "#07090e";
       ctx.lineWidth = 0.8;
       ctx.beginPath();
-      ctx.ellipse(0, 2.5, 3.8, 4.5, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 2.5, 3.8, 4.2, 0, 0, Math.PI * 2);
       ctx.fill();
       ctx.stroke();
 
       ctx.fillStyle = "#e10600";
       ctx.beginPath();
-      ctx.arc(0, 2.5, 2.2, 0, Math.PI * 2);
+      ctx.arc(0, 2.5, 2, 0, Math.PI * 2);
       ctx.fill();
 
+      // Visière de casque
       ctx.strokeStyle = "#2563eb";
-      ctx.lineWidth = 1.8;
+      ctx.lineWidth = 1.6;
       ctx.lineCap = "round";
       ctx.beginPath();
-      ctx.arc(0, 1.8, 2.6, Math.PI * 0.15, Math.PI * 0.85);
+      ctx.arc(0, 1.8, 2.4, Math.PI * 0.15, Math.PI * 0.85);
       ctx.stroke();
-
-      ctx.fillStyle = "#ffffff";
-      ctx.fillRect(2.8, 2, 0.8, 0.8);
 
       ctx.restore(); // Fin kart
       ctx.restore(); // Fin caméra
@@ -633,7 +505,7 @@ export default function CircuitMapHeroCanvas() {
         lastHudUpdate = now;
         let active = checkpoints[0];
         for (let i = 0; i < checkpoints.length; i++) {
-          if (smoothProgress >= checkpoints[i].t - 0.12) {
+          if (smoothProgress >= checkpoints[i].t - 0.1) {
             active = checkpoints[i];
           }
         }
@@ -686,12 +558,12 @@ export default function CircuitMapHeroCanvas() {
         <div className="relative w-full h-20">
           <svg viewBox="0 0 1200 960" className="w-full h-full stroke-[#334155]" fill="none">
             <path
-              d="M 180 780 L 180 350 C 180 200, 280 120, 550 120 C 860 120, 1010 220, 1010 320 C 1010 420, 890 480, 760 480 C 650 480, 570 340, 570 260 C 570 210, 740 210, 820 260 C 840 340, 790 420, 700 500 C 620 590, 610 680, 670 750 C 780 770, 960 860, 900 920 C 740 930, 340 910, 180 780 Z"
+              d="M 180 780 L 180 380 C 180 250, 290 160, 420 130 C 620 130, 920 220, 970 320 C 930 430, 800 460, 670 430 C 570 340, 580 250, 680 210 C 780 230, 830 330, 770 440 C 670 530, 620 640, 680 740 C 800 770, 950 890, 860 940 C 680 940, 280 900, 180 780 Z"
               strokeWidth="48"
               className="opacity-30"
             />
             <path
-              d="M 180 780 L 180 350 C 180 200, 280 120, 550 120 C 860 120, 1010 220, 1010 320 C 1010 420, 890 480, 760 480 C 650 480, 570 340, 570 260 C 570 210, 740 210, 820 260 C 840 340, 790 420, 700 500 C 620 590, 610 680, 670 750 C 780 770, 960 860, 900 920 C 740 930, 340 910, 180 780 Z"
+              d="M 180 780 L 180 380 C 180 250, 290 160, 420 130 C 620 130, 920 220, 970 320 C 930 430, 800 460, 670 430 C 570 340, 580 250, 680 210 C 780 230, 830 330, 770 440 C 670 530, 620 640, 680 740 C 800 770, 950 890, 860 940 C 680 940, 280 900, 180 780 Z"
               stroke="#e10600"
               strokeWidth="40"
               strokeDasharray="100"
