@@ -90,25 +90,21 @@ export default function CircuitMapHeroCanvas() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    // Définition de la piste (Circuit FIA Karting dynamique avec des courbes fluides et naturelles)
+    // Définition de la piste (Circuit FIA Karting de Mariembourg / Genk profilé)
     const rawWaypoints = [
-      // 1. Ligne droite des stands (Accélération pleine charge)
       { x: 180, y: 780 },
       { x: 180, y: 550 },
       { x: 180, y: 350 },
-      // 2. Entrée fluide dans le premier secteur (Curva Grande)
       { x: 210, y: 220 },
       { x: 280, y: 150 },
       { x: 390, y: 120 },
       { x: 550, y: 120 },
       { x: 720, y: 120 },
-      // 3. Grande courbe parabolique Nord
       { x: 860, y: 150 },
       { x: 960, y: 220 },
       { x: 1010, y: 320 },
       { x: 980, y: 420 },
       { x: 890, y: 480 },
-      // 4. Enchaînement technique en S fluide (virages en appui, adieu les angles droits)
       { x: 760, y: 480 },
       { x: 650, y: 430 },
       { x: 570, y: 340 },
@@ -119,12 +115,10 @@ export default function CircuitMapHeroCanvas() {
       { x: 840, y: 340 },
       { x: 790, y: 420 },
       { x: 700, y: 500 },
-      // 5. Chicane rapide en descente
       { x: 620, y: 590 },
       { x: 610, y: 680 },
       { x: 670, y: 750 },
       { x: 780, y: 770 },
-      // 6. Courbe finale Parabolica Sud ramenant aux stands
       { x: 900, y: 800 },
       { x: 960, y: 860 },
       { x: 900, y: 920 },
@@ -134,8 +128,8 @@ export default function CircuitMapHeroCanvas() {
       { x: 220, y: 860 },
     ];
 
-    const sampledPoints: { x: number; y: number; angle: number }[] = [];
-    const numSamples = 1600;
+    const sampledPoints: { x: number; y: number; angle: number; normalX: number; normalY: number }[] = [];
+    const numSamples = 2000;
 
     function catmullRom(
       p0: { x: number; y: number },
@@ -175,7 +169,10 @@ export default function CircuitMapHeroCanvas() {
         const pt = catmullRom(p0, p1, p2, p3, t);
         const nextPt = catmullRom(p0, p1, p2, p3, Math.min(t + 0.01, 1));
         const angle = Math.atan2(nextPt.y - pt.y, nextPt.x - pt.x);
-        sampledPoints.push({ x: pt.x, y: pt.y, angle });
+        // Vecteur normal unitaire (perpendiculaire à la piste)
+        const normalX = -Math.sin(angle);
+        const normalY = Math.cos(angle);
+        sampledPoints.push({ x: pt.x, y: pt.y, angle, normalX, normalY });
       }
     }
 
@@ -228,10 +225,13 @@ export default function CircuitMapHeroCanvas() {
       ctx.scale(baseZoom, baseZoom);
       ctx.translate(-cameraX, -cameraY);
 
-      // --- TRACÉ DU CIRCUIT FIA KARTING ---
+      // =========================================================
+      // 1. DÉGAGEMENT SABLE & GRAVIER (RUN-OFF ZONE HOMOLOGUÉE FIA)
+      // =========================================================
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
 
+      // Bande de sable/gravier large avec texture rugueuse
       ctx.beginPath();
       ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
       for (let i = 1; i < totalPts; i++) {
@@ -239,49 +239,182 @@ export default function CircuitMapHeroCanvas() {
       }
       ctx.closePath();
 
-      // Dégagement gravier/asphalte
-      ctx.strokeStyle = "#111622";
-      ctx.lineWidth = 96;
+      // Zone de dégagement extérieure (Gravel trap)
+      ctx.strokeStyle = "#161b26";
+      ctx.lineWidth = 110;
       ctx.stroke();
 
-      // Vibreurs de course rouge & blanc
+      // Asphalte de sécurité secondaire (Run-off bitumé)
+      ctx.strokeStyle = "#0f1520";
+      ctx.lineWidth = 92;
+      ctx.stroke();
+
+      // =========================================================
+      // 2. VIBREURS BICOLORES DE COURSE INDÉPENDANTS (KERBS GAUCHE & DROITE)
+      // =========================================================
+      // Vibreur Gauche (Extérieur/Intérieur selon virage)
       ctx.save();
-      ctx.lineWidth = 78;
+      ctx.beginPath();
+      for (let i = 0; i < totalPts; i++) {
+        const p = sampledPoints[i];
+        const kx = p.x + p.normalX * 38;
+        const ky = p.y + p.normalY * 38;
+        if (i === 0) ctx.moveTo(kx, ky);
+        else ctx.lineTo(kx, ky);
+      }
+      ctx.closePath();
+      ctx.lineWidth = 10;
       ctx.setLineDash([14, 14]);
       ctx.strokeStyle = "#e10600";
       ctx.stroke();
       ctx.lineDashOffset = 14;
-      ctx.strokeStyle = "#f8fafc";
+      ctx.strokeStyle = "#ffffff";
       ctx.stroke();
       ctx.restore();
 
-      // Ruban d'asphalte
-      ctx.strokeStyle = "#080c13";
-      ctx.lineWidth = 62;
-      ctx.stroke();
-
-      // Ligne médiane
+      // Vibreur Droit
       ctx.save();
-      ctx.lineWidth = 1.5;
-      ctx.setLineDash([16, 20]);
-      ctx.strokeStyle = "#1e293b";
+      ctx.beginPath();
+      for (let i = 0; i < totalPts; i++) {
+        const p = sampledPoints[i];
+        const kx = p.x - p.normalX * 38;
+        const ky = p.y - p.normalY * 38;
+        if (i === 0) ctx.moveTo(kx, ky);
+        else ctx.lineTo(kx, ky);
+      }
+      ctx.closePath();
+      ctx.lineWidth = 10;
+      ctx.setLineDash([14, 14]);
+      ctx.strokeStyle = "#ffffff";
+      ctx.stroke();
+      ctx.lineDashOffset = 14;
+      ctx.strokeStyle = "#e10600";
       ctx.stroke();
       ctx.restore();
 
+      // =========================================================
+      // 3. RUBAN D'ASPHALTE DE COMPÉTITION NOIR PROFOND (68px)
+      // =========================================================
+      ctx.beginPath();
+      ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
+      for (let i = 1; i < totalPts; i++) {
+        ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
+      }
+      ctx.closePath();
+
+      // Bitume granuleux haute adhérence
+      ctx.strokeStyle = "#080b11";
+      ctx.lineWidth = 68;
+      ctx.stroke();
+
+      // Lignes blanches continues de délimitation de piste (Track Limits FIA)
+      ctx.save();
+      // Limite gauche
+      ctx.beginPath();
+      for (let i = 0; i < totalPts; i++) {
+        const p = sampledPoints[i];
+        const lx = p.x + p.normalX * 33;
+        const ly = p.y + p.normalY * 33;
+        if (i === 0) ctx.moveTo(lx, ly);
+        else ctx.lineTo(lx, ly);
+      }
+      ctx.closePath();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#475569";
+      ctx.stroke();
+
+      // Limite droite
+      ctx.beginPath();
+      for (let i = 0; i < totalPts; i++) {
+        const p = sampledPoints[i];
+        const rx = p.x - p.normalX * 33;
+        const ry = p.y - p.normalY * 33;
+        if (i === 0) ctx.moveTo(rx, ry);
+        else ctx.lineTo(rx, ry);
+      }
+      ctx.closePath();
+      ctx.lineWidth = 2;
+      ctx.strokeStyle = "#475569";
+      ctx.stroke();
+      ctx.restore();
+
+      // =========================================================
+      // 4. TRACES DE GOMME DE COURSE DANS LA TRAJECTOIRE (RACING GROOVE)
+      // =========================================================
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
+      for (let i = 1; i < totalPts; i++) {
+        ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
+      }
+      ctx.closePath();
+      ctx.strokeStyle = "#030407";
+      ctx.lineWidth = 22;
+      ctx.stroke();
+      ctx.restore();
+
+      // Ligne médiane discontinue subtile
+      ctx.save();
+      ctx.lineWidth = 1.2;
+      ctx.setLineDash([16, 24]);
+      ctx.strokeStyle = "#1b2432";
+      ctx.stroke();
+      ctx.restore();
+
+      // =========================================================
+      // 5. MARQUAGES AU SOL : GRILLE DE DÉPART & DAMIER MARIEMBOURG
+      // =========================================================
       // Ligne de départ / arrivée Damier
       ctx.save();
       ctx.translate(180, 760);
       ctx.rotate(Math.PI / 2);
-      ctx.lineWidth = 6;
-      ctx.setLineDash([6, 6]);
+      ctx.lineWidth = 7;
+      ctx.setLineDash([7, 7]);
       ctx.strokeStyle = "#ffffff";
       ctx.beginPath();
-      ctx.moveTo(-31, 0);
-      ctx.lineTo(31, 0);
+      ctx.moveTo(-33, 0);
+      ctx.lineTo(33, 0);
       ctx.stroke();
       ctx.restore();
 
-      // Trajectoire idéale parcourue (Glow Racing)
+      // Emplacements de départ sur la grille (Boîtes de départ décalées)
+      const gridPositions = [
+        { x: 172, y: 730, pole: "P1" },
+        { x: 188, y: 700, pole: "P2" },
+        { x: 172, y: 670, pole: "P3" },
+        { x: 188, y: 640, pole: "P4" },
+      ];
+      ctx.save();
+      gridPositions.forEach((gp) => {
+        ctx.strokeStyle = "#334155";
+        ctx.lineWidth = 1.2;
+        ctx.strokeRect(gp.x - 6, gp.y - 10, 12, 20);
+        ctx.fillStyle = "#64748b";
+        ctx.font = "bold 6px monospace";
+        ctx.textAlign = "center";
+        ctx.fillText(gp.pole, gp.x, gp.y + 2);
+      });
+      ctx.restore();
+
+      // Panneaux de distance de freinage avant virage (100m, 50m)
+      const brakeBoards = [
+        { x: 140, y: 420, label: "100" },
+        { x: 140, y: 360, label: "50" },
+      ];
+      ctx.save();
+      brakeBoards.forEach((b) => {
+        ctx.fillStyle = "#ffffff";
+        ctx.fillRect(b.x - 8, b.y - 4, 16, 8);
+        ctx.fillStyle = "#000000";
+        ctx.font = "900 6px monospace";
+        ctx.textAlign = "center";
+        ctx.fillText(b.label, b.x, b.y + 2.5);
+      });
+      ctx.restore();
+
+      // =========================================================
+      // 6. TRAJECTOIRE IDÉALE ILLUMINÉE (RACING LINE GLOW AU SCROLL)
+      // =========================================================
       const passedPtsCount = Math.floor(smoothProgress * totalPts);
       if (passedPtsCount > 1) {
         ctx.beginPath();
@@ -292,42 +425,41 @@ export default function CircuitMapHeroCanvas() {
         ctx.strokeStyle = "#e10600";
         ctx.lineWidth = 4;
         ctx.shadowColor = "#e10600";
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 12;
         ctx.stroke();
         ctx.shadowBlur = 0;
       }
 
       // =========================================================
-      // DESIGN AUTHENTIQUE : KART KZ DE COMPÉTITION (VUE AÉRIENNE PRO)
-      // Châssis tubulaire 30mm, spoiler M7, pontons CIK-FIA, moteur TM KZ
+      // 7. LE KART DE COURSE OFFICIEL #105 (DOUDOU RACING)
       // =========================================================
       ctx.save();
       ctx.translate(kart.x, kart.y);
       ctx.rotate(kart.angle + Math.PI / 2);
 
       // Ombre portée au sol aérodynamique
-      ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
       ctx.beginPath();
-      ctx.ellipse(0, 3, 20, 24, 0, 0, Math.PI * 2);
+      ctx.ellipse(0, 3, 22, 26, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Lueur d'attaque rouge discrète sous l'extracteur
-      const diffuserGlow = ctx.createRadialGradient(0, 16, 1, 0, 16, 18);
-      diffuserGlow.addColorStop(0, "rgba(225, 6, 0, 0.4)");
-      diffuserGlow.addColorStop(1, "rgba(225, 6, 0, 0)");
-      ctx.fillStyle = diffuserGlow;
+      // Traces de gomme fumante laissées par les pneus arrière sous l'accélération
+      const tyreSmoke = ctx.createRadialGradient(0, 16, 1, 0, 16, 18);
+      tyreSmoke.addColorStop(0, "rgba(225, 6, 0, 0.35)");
+      tyreSmoke.addColorStop(1, "rgba(225, 6, 0, 0)");
+      ctx.fillStyle = tyreSmoke;
       ctx.beginPath();
       ctx.arc(0, 16, 18, 0, Math.PI * 2);
       ctx.fill();
 
-      // 1. CHÂSSIS TUBULAIRE EN ACIER CHROMOLYBDE (TUBES 30mm VISIBLES)
+      // A. CHÂSSIS TUBULAIRE EN ACIER CHROMOLYBDE
       ctx.strokeStyle = "#334155";
       ctx.lineWidth = 2.2;
       ctx.beginPath();
       // Arbre arrière rigide de 50mm
       ctx.moveTo(-18, 14);
       ctx.lineTo(18, 14);
-      // Longérons principaux du châssis
+      // Longérons principaux
       ctx.moveTo(-9, 14);
       ctx.lineTo(-9, -12);
       ctx.moveTo(9, 14);
@@ -337,20 +469,18 @@ export default function CircuitMapHeroCanvas() {
       ctx.lineTo(14, -12);
       ctx.stroke();
 
-      // 2. DISQUE DE FREIN ARRIÈRE VENTILÉ & ÉTRIER
+      // B. DISQUE DE FREIN ARRIÈRE VENTILÉ & ÉTRIER ROUGE
       ctx.fillStyle = "#94a3b8";
       ctx.fillRect(-6, 11, 2.5, 6);
-      ctx.fillStyle = "#e10600"; // Étrier de frein Brembo/KZ rouge
+      ctx.fillStyle = "#e10600";
       ctx.fillRect(-6.5, 10, 3.5, 2.5);
 
-      // 3. BLOC MOTEUR KZ 125cc À DROITE AVEC CYLINDRE & POT D'ÉCHAPPEMENT
-      // Moteur à droite du baquet (standard karting KZ)
+      // C. BLOC MOTEUR IAME X30 À DROITE & ÉCHAPPEMENT
       ctx.fillStyle = "#1e293b";
       ctx.fillRect(8, 2, 7, 9);
-      // Culasse à ailettes alu
       ctx.fillStyle = "#64748b";
       ctx.fillRect(9, 3, 5, 3);
-      // Échappement tubulaire cintré (couleur titane)
+      // Échappement tubulaire cintré titane
       ctx.strokeStyle = "#475569";
       ctx.lineWidth = 2;
       ctx.beginPath();
@@ -359,31 +489,28 @@ export default function CircuitMapHeroCanvas() {
       ctx.lineTo(5, 22);
       ctx.stroke();
 
-      // 4. LES 4 ROUES DE COMPÉTITION (PNEUS VEGA SLICK + JANTES MAGNÉSIUM)
-      // Roues avant (10x4.50-5)
+      // D. LES 4 ROUES DE COMPÉTITION (PNEUS KOMET SLICK + JANTES MAGNÉSIUM)
       const drawWheel = (wx: number, wy: number, w: number, h: number) => {
-        // Pneu slick noir mat
         ctx.fillStyle = "#0a0d14";
         ctx.strokeStyle = "#1e293b";
         ctx.lineWidth = 0.8;
         ctx.fillRect(wx - w / 2, wy - h / 2, w, h);
         ctx.strokeRect(wx - w / 2, wy - h / 2, w, h);
-        // Jante en magnésium dorée/bronze
+        // Jante magnésium dorée/bronze
         ctx.fillStyle = "#92400e";
         ctx.fillRect(wx - w / 4, wy - h / 4, w / 2, h / 2);
-        // Écrou de roue central rouge anodisé
+        // Écrou de roue anodisé rouge
         ctx.fillStyle = "#e10600";
         ctx.fillRect(wx - 1, wy - 1, 2, 2);
       };
 
       drawWheel(-16, -12, 6, 11);
       drawWheel(16, -12, 6, 11);
-      // Roues arrière larges (11x7.10-5)
       drawWheel(-19, 14, 8, 14);
       drawWheel(19, 14, 8, 14);
 
-      // 5. CARROSSERIE CIK-FIA (SPOILER AVANT M7, NASEAU & PONTONS BIREL ART)
-      // Spoiler avant profilé aérodynamique
+      // E. CARROSSERIE CIK-FIA OFFICIELLE
+      // Spoiler avant profilé
       ctx.fillStyle = "#e10600";
       ctx.strokeStyle = "#ffffff";
       ctx.lineWidth = 0.8;
@@ -398,9 +525,8 @@ export default function CircuitMapHeroCanvas() {
       ctx.fill();
       ctx.stroke();
 
-      // Pontons latéraux profilés (gauche et droite)
+      // Pontons latéraux
       ctx.fillStyle = "#e10600";
-      // Ponton gauche
       ctx.beginPath();
       ctx.moveTo(-15, -8);
       ctx.lineTo(-11, -8);
@@ -409,7 +535,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.closePath();
       ctx.fill();
       ctx.stroke();
-      // Ponton droit
+
       ctx.beginPath();
       ctx.moveTo(11, -8);
       ctx.lineTo(15, -8);
@@ -419,12 +545,12 @@ export default function CircuitMapHeroCanvas() {
       ctx.fill();
       ctx.stroke();
 
-      // Bandes racing blanches et graphismes sur les pontons
+      // Bandes racing blanches
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(-14, -2, 2, 8);
       ctx.fillRect(12, -2, 2, 8);
 
-      // Naseau aérodynamique central (panneau de numéro)
+      // Naseau central avant blanc (Porte-numéro)
       ctx.fillStyle = "#ffffff";
       ctx.beginPath();
       ctx.moveTo(-5, -16);
@@ -434,26 +560,23 @@ export default function CircuitMapHeroCanvas() {
       ctx.closePath();
       ctx.fill();
 
-      // Numéro officiel #105 imprimé en noir sur fond blanc
+      // Numéro officiel #105 de Doudou Racing
       ctx.fillStyle = "#07090e";
       ctx.font = "900 6.5px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("105", 0, -10);
 
-      // 6. VOLANT RACING EN PEAU RETOURNÉE & ÉCRAN TÉLÉMÉTRIE ALFANO/AIM
-      // Volant méplat
+      // F. VOLANT MÉPLAT & ÉCRAN MYCHRON
       ctx.strokeStyle = "#07090e";
       ctx.lineWidth = 1.8;
       ctx.beginPath();
       ctx.arc(0, -3, 3.8, Math.PI * 0.1, Math.PI * 0.9);
       ctx.stroke();
-      // Écran Mychron / Alfano sur le volant (LED bleue)
       ctx.fillStyle = "#2563eb";
       ctx.fillRect(-1.5, -4, 3, 1.8);
 
-      // 7. SIÈGE BAQUET CARBONE TILLET & PILOTE CASQUÉ
-      // Bord du baquet carbone
+      // G. SIÈGE BAQUET CARBONE TILLET & PILOTE CASQUÉ
       ctx.strokeStyle = "#475569";
       ctx.fillStyle = "#0c1017";
       ctx.lineWidth = 1;
@@ -462,18 +585,16 @@ export default function CircuitMapHeroCanvas() {
       ctx.fill();
       ctx.stroke();
 
-      // Épaules et combinaison de course (Combinaison rouge et blanche Alpinestars)
+      // Combinaison Alpinestars d'Edouard Godfroid
       ctx.fillStyle = "#e10600";
       ctx.beginPath();
       ctx.ellipse(0, 4.5, 5.5, 3.5, 0, 0, Math.PI * 2);
       ctx.fill();
-      // Inserts blancs aux épaules
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(-5, 3, 2, 3);
       ctx.fillRect(3, 3, 2, 3);
 
-      // CASQUE FIA PRO (Arai GP-6 / Bell KC7)
-      // Forme aérodynamique du casque avec spoiler arrière
+      // Casque FIA Pro avec visière irisée
       ctx.fillStyle = "#ffffff";
       ctx.strokeStyle = "#07090e";
       ctx.lineWidth = 0.8;
@@ -482,13 +603,11 @@ export default function CircuitMapHeroCanvas() {
       ctx.fill();
       ctx.stroke();
 
-      // Motif racing rouge sur la calotte
       ctx.fillStyle = "#e10600";
       ctx.beginPath();
       ctx.arc(0, 2.5, 2.2, 0, Math.PI * 2);
       ctx.fill();
 
-      // Visière irisée bleue miroir
       ctx.strokeStyle = "#2563eb";
       ctx.lineWidth = 1.8;
       ctx.lineCap = "round";
@@ -496,7 +615,6 @@ export default function CircuitMapHeroCanvas() {
       ctx.arc(0, 1.8, 2.6, Math.PI * 0.15, Math.PI * 0.85);
       ctx.stroke();
 
-      // Visière tear-off (petit détail pro)
       ctx.fillStyle = "#ffffff";
       ctx.fillRect(2.8, 2, 0.8, 0.8);
 
