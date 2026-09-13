@@ -434,12 +434,12 @@ export default function CircuitMapHeroCanvas() {
       ctx.closePath();
       ctx.fill();
 
-      // Numéro officiel #42 imprimé en noir sur fond blanc
+      // Numéro officiel #105 imprimé en noir sur fond blanc
       ctx.fillStyle = "#07090e";
       ctx.font = "900 6.5px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
-      ctx.fillText("42", 0, -10);
+      ctx.fillText("105", 0, -10);
 
       // 6. VOLANT RACING EN PEAU RETOURNÉE & ÉCRAN TÉLÉMÉTRIE ALFANO/AIM
       // Volant méplat

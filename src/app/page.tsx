@@ -91,7 +91,7 @@ export default function HomePage() {
       <header className="fixed top-0 left-0 right-0 z-50 bg-[#07090e]/85 backdrop-blur-md border-b border-[#1b2533] px-6 py-4 flex items-center justify-between">
         <Link href="/" className="flex items-center gap-2.5 group">
           <span className="bg-[#e10600] text-white font-mono font-black text-xs px-2.5 py-0.5 tracking-tighter">
-            #42
+            #105
           </span>
           <span className="font-mono tracking-widest text-sm font-bold uppercase text-white group-hover:text-[#e10600] transition-colors">
             EDOUARD GODFROID &bull; DOUDOU RACING
@@ -116,7 +116,7 @@ export default function HomePage() {
         <div className="max-w-2xl space-y-6 pt-16 pointer-events-auto">
           <div className="inline-flex items-center gap-2 bg-[#0c1017]/90 border border-[#1b2533] px-3.5 py-1.5 font-mono text-[11px] text-[#e10600]">
             <span className="w-2 h-2 rounded-full bg-[#e10600] animate-ping"></span>
-            <span className="font-bold tracking-wider">CHAMPION DE BELGIQUE DE KARTING &bull; DOUDOU RACING</span>
+            <span className="font-bold tracking-wider">CHAMPION DE BELGIQUE DE KARTING &bull; DOUDOU RACING #105</span>
           </div>
 
           <h1 className="text-6xl sm:text-7xl md:text-9xl font-black uppercase tracking-tighter leading-[0.88] text-white">
@@ -126,7 +126,7 @@ export default function HomePage() {
 
           <p className="font-mono text-xs sm:text-sm text-[#94a3b8] leading-relaxed max-w-lg">
             Né en 2012 à Charleroi, Edouard Godfroid est sacré Champion de Belgique en catégorie Mini. 
-            Embarquez à bord du kart #42 pour vivre un tour chrono en immersion totale.
+            Embarquez à bord du kart #105 pour vivre un tour chrono en immersion totale.
           </p>
 
           {/* Citation phare */}
@@ -158,7 +158,7 @@ export default function HomePage() {
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-transparent opacity-75" />
               <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between font-mono text-[9px]">
-                <span className="text-white font-bold tracking-tighter">#42 DOUDOU</span>
+                <span className="text-white font-bold tracking-tighter">#105 DOUDOU</span>
                 <span className="text-[#e10600] font-black">CHAMPION 2023</span>
               </div>
             </div>
@@ -422,7 +422,7 @@ export default function HomePage() {
 
         {/* Footer Motorsport */}
         <footer className="w-full border-t border-[#1b2533] pt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-mono text-xs text-[#64748b] pointer-events-auto">
-          <span>EDOUARD GODFROID « DOUDOU » &bull; CHAMPION DE BELGIQUE 2023 &bull; TEAM EUROKARTING</span>
+          <span>EDOUARD GODFROID « DOUDOU » #105 &bull; CHAMPION DE BELGIQUE 2023 &bull; TEAM EUROKARTING</span>
           <span className="text-[#e10600] font-bold">DOUDOURACING.BE &bull; ONBOARD CIRCUIT SCROLLYTELLING</span>
         </footer>
       </section>
