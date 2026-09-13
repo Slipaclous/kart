@@ -9,6 +9,7 @@ interface Checkpoint {
   type: "straight" | "braking" | "apex" | "chicane" | "finish";
   sub: string;
   speed: string;
+  speedNum: number;
   gear: string;
   gForce: string;
   desc: string;
@@ -33,6 +34,7 @@ export default function CircuitMapHeroCanvas() {
       type: "straight",
       sub: "KARTING DES FAGNES MARIEMBOURG // PLEIN GAZ",
       speed: "128 KM/H",
+      speedNum: 128,
       gear: "DIRECT",
       gForce: "1.15 G",
       desc: "Sortie de grille en trombe. Moteur IAME hurlant à 16 000 tr/min.",
@@ -44,6 +46,7 @@ export default function CircuitMapHeroCanvas() {
       type: "braking",
       sub: "GROS FREINAGE DÉGRESSIF & POINT DE CORDE",
       speed: "72 KM/H",
+      speedNum: 72,
       gear: "DIRECT",
       gForce: "2.75 G",
       desc: "Inscrire le train avant sur le vibreur de corde à pleine adhérence.",
@@ -55,6 +58,7 @@ export default function CircuitMapHeroCanvas() {
       type: "chicane",
       sub: "TRANSFERT DE CHARGE MILLIMÉTRÉ",
       speed: "78 KM/H",
+      speedNum: 78,
       gear: "DIRECT",
       gForce: "2.60 G",
       desc: "Le châssis Eurokarting encaisse la torsion sans sourciller.",
@@ -66,6 +70,7 @@ export default function CircuitMapHeroCanvas() {
       type: "apex",
       sub: "COURBE RAPIDE EN APPUI PLEIN GAZ",
       speed: "114 KM/H",
+      speedNum: 114,
       gear: "DIRECT",
       gForce: "2.45 G",
       desc: "Gommes Komet à température de fonctionnement optimale.",
@@ -77,6 +82,7 @@ export default function CircuitMapHeroCanvas() {
       type: "finish",
       sub: "CHAMPION DE BELGIQUE // TOUR RECORD",
       speed: "128 KM/H",
+      speedNum: 128,
       gear: "DIRECT",
       gForce: "1.10 G",
       desc: "Tour bouclé. Le titre de Champion de Belgique en poche.",
@@ -90,26 +96,45 @@ export default function CircuitMapHeroCanvas() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    // Tracé fidèle, réaliste et dynamique de Mariembourg (Karting des Fagnes)
-    // 1 366 mètres réels de pur tracé FIA
+    // 1. CRÉATION D'UNE TEXTURE D'ASPHALTE PROCÉDURALE OFFSCREEN (HAUTE PERFORMANCE)
+    const patternCanvas = document.createElement("canvas");
+    patternCanvas.width = 64;
+    patternCanvas.height = 64;
+    const pctx = patternCanvas.getContext("2d");
+    let asphaltPattern: CanvasPattern | null = null;
+
+    if (pctx) {
+      pctx.fillStyle = "#090d14";
+      pctx.fillRect(0, 0, 64, 64);
+      // Bruit minéral d'asphalte
+      for (let i = 0; i < 400; i++) {
+        const x = Math.random() * 64;
+        const y = Math.random() * 64;
+        const radius = Math.random() * 1.2 + 0.3;
+        const shade = Math.floor(Math.random() * 25) + 14;
+        pctx.fillStyle = `rgb(${shade}, ${shade + 4}, ${shade + 9})`;
+        pctx.beginPath();
+        pctx.arc(x, y, radius, 0, Math.PI * 2);
+        pctx.fill();
+      }
+      asphaltPattern = ctx.createPattern(patternCanvas, "repeat");
+    }
+
+    // 2. TRACÉ FIDÈLE DU KARTING DES FAGNES (MARIEMBOURG 1 366 M)
     const rawWaypoints = [
-      // 1. Ligne droite principale des stands
-      { x: 220, y: 760 },
+      { x: 220, y: 760 }, // Ligne des stands
       { x: 220, y: 540 },
       { x: 220, y: 360 },
-      // 2. Courbe rapide 1 vers la ligne droite arrière
-      { x: 250, y: 230 },
+      { x: 250, y: 230 }, // Courbe rapide 1
       { x: 340, y: 150 },
       { x: 480, y: 130 },
       { x: 680, y: 130 },
       { x: 840, y: 150 },
-      // 3. Épingle Est
-      { x: 940, y: 220 },
+      { x: 940, y: 220 }, // Épingle Est
       { x: 970, y: 320 },
       { x: 920, y: 420 },
       { x: 790, y: 450 },
-      // 4. Portion sinueuse technique (S du bois)
-      { x: 660, y: 440 },
+      { x: 660, y: 440 }, // Portion sinueuse du bois
       { x: 550, y: 380 },
       { x: 500, y: 290 },
       { x: 520, y: 220 },
@@ -117,12 +142,10 @@ export default function CircuitMapHeroCanvas() {
       { x: 720, y: 220 },
       { x: 770, y: 300 },
       { x: 740, y: 400 },
-      // 5. Descente vers la tribune sud
-      { x: 640, y: 500 },
+      { x: 640, y: 500 }, // Descente vers stadium
       { x: 570, y: 600 },
       { x: 570, y: 700 },
-      // 6. Raccordement et parabolique finale
-      { x: 630, y: 780 },
+      { x: 630, y: 780 }, // Raccordement et parabole sud
       { x: 740, y: 810 },
       { x: 870, y: 840 },
       { x: 930, y: 900 },
@@ -197,6 +220,10 @@ export default function CircuitMapHeroCanvas() {
     let smoothProgress = 0;
     let cameraX = 220;
     let cameraY = 600;
+    let cameraZoom = 1;
+
+    // Particules dynamiques projetées par les pneumatiques (Gomme chaude / poussière de frein)
+    const particles: { x: number; y: number; vx: number; vy: number; life: number; maxLife: number; color: string }[] = [];
 
     const handleScroll = () => {
       const scrollY = window.scrollY || window.pageYOffset;
@@ -210,7 +237,6 @@ export default function CircuitMapHeroCanvas() {
 
     let animationFrameId: number;
 
-    // Helper pour construire le tracé vectoriel fermé complet
     const buildCircuitPath = () => {
       ctx.beginPath();
       ctx.moveTo(sampledPoints[0].x, sampledPoints[0].y);
@@ -227,7 +253,20 @@ export default function CircuitMapHeroCanvas() {
       const currentIdx = Math.min(Math.floor(smoothProgress * (totalPts - 1)), totalPts - 1);
       const kart = sampledPoints[currentIdx] || sampledPoints[0];
 
-      // Caméra fluide centrée sur le kart
+      // Calcul dynamique de la vitesse selon la courbure du virage
+      // (Ligne droite = 128 km/h, épingle = 68-72 km/h)
+      let activeSpeed = 120;
+      for (let i = 0; i < checkpoints.length; i++) {
+        if (smoothProgress >= checkpoints[i].t - 0.12) {
+          activeSpeed = checkpoints[i].speedNum;
+        }
+      }
+
+      // 3. CINÉMATIQUE CAMÉRA : RECUL FOV SELON LA VITESSE
+      // À 128 km/h le FOV s'ouvre (zoom diminue), à 68 km/h la caméra se rapproche
+      const targetZoom = (Math.min(width, height) / 820) * (activeSpeed > 100 ? 0.94 : 1.05);
+      cameraZoom += (targetZoom - cameraZoom) * 0.05;
+
       cameraX += (kart.x - cameraX) * 0.05;
       cameraY += (kart.y - cameraY) * 0.05;
 
@@ -235,52 +274,58 @@ export default function CircuitMapHeroCanvas() {
 
       ctx.save();
       ctx.translate(width / 2, height / 2);
-      // Zoom ultra équilibré et respirant
-      const baseZoom = Math.min(width, height) / 820;
-      ctx.scale(baseZoom, baseZoom);
+      ctx.scale(cameraZoom, cameraZoom);
       ctx.translate(-cameraX, -cameraY);
 
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
 
       // =========================================================================
-      // 1. DÉGAGEMENT SÉCURITÉ RUN-OFF FIA & SOL D'ASPHALTE SOMBRE NATUREL
+      // 1. ZONE DE DÉGAGEMENT & RUN-OFF FIA (BAC À GRAVIER PRO)
       // =========================================================================
-      // Fond de dégagement / Bac à gravier sobre (non saturé, look nocturne pro)
       buildCircuitPath();
-      ctx.strokeStyle = "#0d131f";
-      ctx.lineWidth = 110;
+      ctx.strokeStyle = "#0b1018";
+      ctx.lineWidth = 114;
       ctx.stroke();
 
-      // Bordure extérieure de sécurité
       buildCircuitPath();
-      ctx.strokeStyle = "#131b29";
-      ctx.lineWidth = 92;
+      ctx.strokeStyle = "#111824";
+      ctx.lineWidth = 94;
       ctx.stroke();
 
       // =========================================================================
-      // 2. VIBREURS DE COURSE FIA HYPER RÉALISTES AUX POINTS CLÉS UNIQUEMENT
-      // (Pas sur tout le circuit comme un jouet, mais précisément sur les cordes)
+      // 2. VIBREURS DE CORDE FIA HYPER RÉALISTES AVEC OMBRAGE & TEXTURE
       // =========================================================================
-      // Zones réelles de vibreurs :
-      // [tStart, tEnd, side: 1 for left / -1 for right, length]
       const kerbZones: { start: number; end: number; side: number }[] = [
-        { start: 0.18, end: 0.28, side: -1 }, // Entrée & corde Virage 1
-        { start: 0.32, end: 0.38, side: 1 },  // Vibreur extérieur sortie V1
-        { start: 0.40, end: 0.48, side: -1 }, // Épingle Est intérieure
-        { start: 0.50, end: 0.56, side: 1 },  // Chicane du bois (gauche)
-        { start: 0.57, end: 0.63, side: -1 }, // Chicane du bois (droite)
-        { start: 0.72, end: 0.80, side: -1 }, // Corde Parabolique sud
-        { start: 0.82, end: 0.88, side: 1 },  // Vibreur de sortie parabolique
+        { start: 0.18, end: 0.28, side: -1 }, // Virage 1 corde
+        { start: 0.32, end: 0.38, side: 1 },  // Sortie V1 extérieur
+        { start: 0.40, end: 0.48, side: -1 }, // Épingle Est
+        { start: 0.50, end: 0.56, side: 1 },  // Chicane bois gauche
+        { start: 0.57, end: 0.63, side: -1 }, // Chicane bois droite
+        { start: 0.72, end: 0.80, side: -1 }, // Parabolique sud corde
+        { start: 0.82, end: 0.88, side: 1 },  // Parabolique sortie
       ];
 
       kerbZones.forEach((zone) => {
         const startIdx = Math.floor(zone.start * totalPts);
         const endIdx = Math.floor(zone.end * totalPts);
-        const kerbWidth = 6;
-        const offset = 32 * zone.side;
+        const offset = 31 * zone.side;
 
+        // Ombrage de bord de vibreur pour donner du relief 3D
         ctx.save();
+        ctx.beginPath();
+        for (let i = startIdx; i <= endIdx; i++) {
+          const pt = sampledPoints[i];
+          const kx = pt.x + pt.normalX * (offset + 1.5 * zone.side);
+          const ky = pt.y + pt.normalY * (offset + 1.5 * zone.side);
+          if (i === startIdx) ctx.moveTo(kx, ky);
+          else ctx.lineTo(kx, ky);
+        }
+        ctx.lineWidth = 7;
+        ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
+        ctx.stroke();
+
+        // Vibreur bicolore rouge & blanc FIA
         ctx.beginPath();
         for (let i = startIdx; i <= endIdx; i++) {
           const pt = sampledPoints[i];
@@ -289,37 +334,36 @@ export default function CircuitMapHeroCanvas() {
           if (i === startIdx) ctx.moveTo(kx, ky);
           else ctx.lineTo(kx, ky);
         }
-        ctx.lineWidth = kerbWidth;
+        ctx.lineWidth = 6;
         ctx.setLineDash([12, 12]);
         ctx.strokeStyle = "#e10600";
         ctx.stroke();
 
         ctx.lineDashOffset = 12;
-        ctx.strokeStyle = "#ffffff";
+        ctx.strokeStyle = "#f8fafc";
         ctx.stroke();
         ctx.restore();
       });
 
       // =========================================================================
-      // 3. RUBAN D'ASPHALTE NOIR CARBONE AUTHENTIQUE (LARGEUR 60PX)
+      // 3. ASPHALTE AUTHENTIQUE HAUTE ADHÉRENCE AVEC PATTERN MINÉRAL
       // =========================================================================
-      // Bitume principal haute friction
       buildCircuitPath();
-      ctx.strokeStyle = "#080c13";
+      ctx.strokeStyle = asphaltPattern || "#080c13";
       ctx.lineWidth = 60;
       ctx.stroke();
 
-      // Bande de roulement texturée / gomme centrale déposée
+      // Dépôt de gomme de trajectoire sombre (Racing Groove)
       buildCircuitPath();
-      ctx.strokeStyle = "#05070c";
+      ctx.strokeStyle = "rgba(4, 6, 10, 0.85)";
       ctx.lineWidth = 42;
       ctx.stroke();
 
       // =========================================================================
-      // 4. LIMITES DE PISTE FINES & ÉLÉGANTES (LIGNES BLANCHES FIA CONTINUES)
+      // 4. LIMITES DE PISTE CHIRURGICALES (LIGNES BLANCHES FIA CONTINUES)
       // =========================================================================
       ctx.save();
-      // Limite gauche
+      // Ligne gauche
       ctx.beginPath();
       for (let i = 0; i < totalPts; i++) {
         const p = sampledPoints[i];
@@ -330,10 +374,10 @@ export default function CircuitMapHeroCanvas() {
       }
       ctx.closePath();
       ctx.lineWidth = 1.2;
-      ctx.strokeStyle = "#334155";
+      ctx.strokeStyle = "#384556";
       ctx.stroke();
 
-      // Limite droite
+      // Ligne droite
       ctx.beginPath();
       for (let i = 0; i < totalPts; i++) {
         const p = sampledPoints[i];
@@ -344,12 +388,12 @@ export default function CircuitMapHeroCanvas() {
       }
       ctx.closePath();
       ctx.lineWidth = 1.2;
-      ctx.strokeStyle = "#334155";
+      ctx.strokeStyle = "#384556";
       ctx.stroke();
       ctx.restore();
 
       // =========================================================================
-      // 5. DAMIER DE DÉPART DE MARIEMBOURG (CHIC & MINIMALISTE)
+      // 5. DAMIER DE DÉPART DE MARIEMBOURG (STATIONS STANDS)
       // =========================================================================
       ctx.save();
       ctx.translate(220, 740);
@@ -364,7 +408,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.restore();
 
       // =========================================================================
-      // 6. TRAJECTOIRE DE COURSE CHRONO (RACING LINE NÉON SUBTIL AU SCROLL)
+      // 6. TRAJECTOIRE CHRONO D'ÉDOUARD (RACING LINE NÉON PROGRESSIVE)
       // =========================================================================
       const passedPtsCount = Math.floor(smoothProgress * totalPts);
       if (passedPtsCount > 1) {
@@ -374,12 +418,10 @@ export default function CircuitMapHeroCanvas() {
         for (let i = 1; i <= passedPtsCount; i++) {
           ctx.lineTo(sampledPoints[i].x, sampledPoints[i].y);
         }
-        // Halo néon subtil
-        ctx.strokeStyle = "rgba(225, 6, 0, 0.25)";
+        ctx.strokeStyle = "rgba(225, 6, 0, 0.2)";
         ctx.lineWidth = 6;
         ctx.stroke();
 
-        // Fil rouge chirurgical
         ctx.strokeStyle = "#e10600";
         ctx.lineWidth = 2;
         ctx.stroke();
@@ -387,28 +429,61 @@ export default function CircuitMapHeroCanvas() {
       }
 
       // =========================================================================
-      // 7. LE KART DE COURSE OFFICIEL #105 (DOUDOU RACING)
+      // 7. PARTICULES D'ACCÉLÉRATION & ABRASION GOMME
+      // =========================================================================
+      if (Math.random() < 0.35 && passedPtsCount > 5) {
+        const backAngle = kart.angle + Math.PI;
+        particles.push({
+          x: kart.x + Math.cos(backAngle) * 14 + (Math.random() - 0.5) * 8,
+          y: kart.y + Math.sin(backAngle) * 14 + (Math.random() - 0.5) * 8,
+          vx: Math.cos(backAngle) * (Math.random() * 2 + 1),
+          vy: Math.sin(backAngle) * (Math.random() * 2 + 1),
+          life: 0,
+          maxLife: Math.floor(Math.random() * 20) + 10,
+          color: Math.random() > 0.4 ? "rgba(225, 6, 0, 0.6)" : "rgba(100, 116, 139, 0.4)",
+        });
+      }
+
+      // Mise à jour et rendu des particules
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life++;
+        const alpha = 1 - p.life / p.maxLife;
+        if (alpha <= 0) {
+          particles.splice(i, 1);
+          continue;
+        }
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 1.2 * alpha, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      // =========================================================================
+      // 8. LE KART DE COURSE OFFICIEL #105 (DOUDOU RACING)
       // =========================================================================
       ctx.save();
       ctx.translate(kart.x, kart.y);
       ctx.rotate(kart.angle + Math.PI / 2);
 
       // Ombre portée aérodynamique
-      ctx.fillStyle = "rgba(0, 0, 0, 0.65)";
+      ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
       ctx.beginPath();
       ctx.ellipse(0, 3, 19, 23, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Sillage lumineux arrière
-      const trailGlow = ctx.createRadialGradient(0, 14, 0, 0, 14, 12);
+      // Halo sillage propulseur
+      const trailGlow = ctx.createRadialGradient(0, 14, 0, 0, 14, 14);
       trailGlow.addColorStop(0, "rgba(225, 6, 0, 0.45)");
       trailGlow.addColorStop(1, "rgba(225, 6, 0, 0)");
       ctx.fillStyle = trailGlow;
       ctx.beginPath();
-      ctx.arc(0, 14, 12, 0, Math.PI * 2);
+      ctx.arc(0, 14, 14, 0, Math.PI * 2);
       ctx.fill();
 
-      // A. CHÂSSIS TUBULAIRE
+      // A. CHÂSSIS TUBULAIRE CHROMOLYBDE
       ctx.strokeStyle = "#334155";
       ctx.lineWidth = 1.8;
       ctx.beginPath();
@@ -422,9 +497,9 @@ export default function CircuitMapHeroCanvas() {
       ctx.lineTo(12, -10);
       ctx.stroke();
 
-      // B. LES 4 ROUES DE COMPÉTITION (PNEUS SLICK KOMET)
+      // B. LES 4 PNEUS DE COMPÉTITION SLICK KOMET
       const drawWheel = (wx: number, wy: number, w: number, h: number) => {
-        ctx.fillStyle = "#090d14";
+        ctx.fillStyle = "#080c14";
         ctx.strokeStyle = "#1e293b";
         ctx.lineWidth = 0.8;
         ctx.fillRect(wx - w / 2, wy - h / 2, w, h);
@@ -432,7 +507,7 @@ export default function CircuitMapHeroCanvas() {
         // Centre de jante magnésium
         ctx.fillStyle = "#b45309";
         ctx.fillRect(wx - w / 4, wy - h / 4, w / 2, h / 2);
-        // Écrou rouge
+        // Écrou anodisé rouge
         ctx.fillStyle = "#e10600";
         ctx.fillRect(wx - 1, wy - 1, 2, 2);
       };
@@ -517,7 +592,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.ellipse(0, 4.5, 5, 3.2, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Casque FIA officiel blanc avec bandeau rouge et visière cobalt
+      // Casque FIA officiel blanc avec visière cobalt
       ctx.fillStyle = "#ffffff";
       ctx.strokeStyle = "#07090e";
       ctx.lineWidth = 0.8;
@@ -531,7 +606,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.arc(0, 2.5, 2, 0, Math.PI * 2);
       ctx.fill();
 
-      // Visière de casque
+      // Visière irisée
       ctx.strokeStyle = "#2563eb";
       ctx.lineWidth = 1.6;
       ctx.lineCap = "round";

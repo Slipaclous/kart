@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Download, ChevronDown, Award, Zap, Disc3, Compass, Trophy, Calendar, Flag, User, ShieldCheck, Quote } from "lucide-react";
+import { Download, ChevronDown, Award, Zap, Disc3, Compass, Trophy, Calendar, Flag, User, ShieldCheck, Quote, Cpu, Activity, CheckCircle2, BarChart3, Mail } from "lucide-react";
 import CircuitMapHeroCanvas from "@/components/CircuitMapHeroCanvas";
 import CircuitMapSVG from "@/components/CircuitMapSVG";
 
@@ -13,10 +13,10 @@ export default function HomePage() {
   ];
 
   const trophies = [
-    { year: "2023", title: "Champion de Belgique", org: "IAME Series Benelux", track: "Catégorie Mini", badge: "TITRE NATIONAL" },
-    { year: "2022", title: "Vice-Champion Benelux", org: "IAME Series Benelux", track: "Mariembourg & Genk", badge: "PODIUM GÉNÉRAL" },
-    { year: "2021", title: "Top 3 Mini Rookie", org: "IAME Series Benelux & Euro Series", track: "Genk, Mariembourg & Le Mans", badge: "CHALLENGER TOP 3" },
-    { year: "2019", title: "1er Trophée Endurance", org: "BSK Frasnes", track: "Victoire Course d'Endurance", badge: "PREMIER SUCCÈS" },
+    { year: "2023", title: "Champion de Belgique", org: "IAME Series Benelux", track: "Catégorie Mini", badge: "TITRE NATIONAL", gap: "LEADER 148 PTS", s1: "18.204", s2: "17.410", s3: "18.494" },
+    { year: "2022", title: "Vice-Champion Benelux", org: "IAME Series Benelux", track: "Mariembourg & Genk", badge: "PODIUM GÉNÉRAL", gap: "+0.042s", s1: "18.312", s2: "17.502", s3: "18.511" },
+    { year: "2021", title: "Top 3 Mini Rookie", org: "IAME Series Benelux & Euro Series", track: "Genk, Mariembourg & Le Mans", badge: "CHALLENGER TOP 3", gap: "+0.118s", s1: "18.480", s2: "17.610", s3: "18.620" },
+    { year: "2019", title: "1er Trophée Endurance", org: "BSK Frasnes", track: "Victoire Course d'Endurance", badge: "PREMIER SUCCÈS", gap: "VICTOIRE", s1: "18.910", s2: "17.990", s3: "19.010" },
   ];
 
   const calendarEvents: {
@@ -137,19 +137,32 @@ export default function HomePage() {
 
           <div className="flex items-center gap-3 font-mono text-xs text-white pt-2">
             <ChevronDown className="w-4 h-4 animate-bounce text-[#e10600]" />
-            <span className="tracking-widest text-[#94a3b8]">SCROLLEZ POUR SUIVRE LE TOUR CHRONO SUR LA PISTE</span>
+            <span className="tracking-widest text-[#94a3b8]">SCROLLEZ POUR DÉBUTER LE TOUR CHRONO</span>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-          SECTEUR 1 : L'HISTOIRE DE DOUDOU (~20% Scroll)
+          SECTEUR 1 : CARTE LICENCE OFFICIELLE CIK-FIA (~20% Scroll)
           ========================================================= */}
       <section className="relative min-h-screen flex items-center justify-start px-6 md:px-16 z-20 pointer-events-none">
-        <div className="max-w-xl pointer-events-auto bg-[#0c1017]/95 border-l-4 border-l-[#e10600] border-y border-r border-[#1b2533] p-6 backdrop-blur-md shadow-2xl space-y-4">
-          <div className="flex flex-col sm:flex-row gap-5 items-center">
-            {/* PHOTO OFFICIELLE D'EDOUARD GODFROID */}
-            <div className="relative w-32 h-40 shrink-0 border border-[#1e293b] bg-[#07090e] overflow-hidden group">
+        <div className="max-w-xl w-full pointer-events-auto bg-[#0c1017]/95 border border-[#1e293b] p-6 backdrop-blur-md shadow-2xl space-y-4">
+          {/* Header de la carte Licence */}
+          <div className="flex items-center justify-between border-b border-[#1e293b] pb-3">
+            <div className="flex items-center gap-2">
+              <span className="bg-[#e10600] text-white font-mono font-black text-[10px] px-2 py-0.5">
+                RACER ID
+              </span>
+              <span className="font-mono text-xs text-white font-bold tracking-wider">
+                CIK-FIA & RACB NATIONAL LICENCE
+              </span>
+            </div>
+            <span className="font-mono text-[10px] text-[#64748b]">VALID: 2026 SEASON</span>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-5 items-start">
+            {/* PHOTO DU PILOTE */}
+            <div className="relative w-36 h-44 shrink-0 border border-[#1e293b] bg-[#07090e] overflow-hidden group">
               <Image
                 src="/doudou-hero.png"
                 alt="Edouard Godfroid Doudou Racing"
@@ -159,83 +172,133 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-transparent opacity-75" />
               <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between font-mono text-[9px]">
                 <span className="text-white font-bold tracking-tighter">#105 DOUDOU</span>
-                <span className="text-[#e10600] font-black">CHAMPION 2023</span>
+                <span className="text-[#e10600] font-black">CHAMPION</span>
               </div>
             </div>
 
-            {/* BIO OFFICIELLE DEPUIS LE SITE */}
-            <div className="space-y-2 flex-1">
-              <div className="font-mono text-[11px] text-[#e10600] tracking-widest uppercase flex items-center gap-2 font-bold">
-                <User className="w-3.5 h-3.5" />
-                <span>BIO &bull; DE MONTIGNY-LE-TILLEUL AUX CIRCUITS FIA</span>
+            {/* DONNÉES BIOMÉTRIQUES & HISTOIRE */}
+            <div className="space-y-3 flex-1">
+              <div>
+                <span className="text-[10px] font-mono text-[#e10600] font-bold block uppercase tracking-widest">
+                  PILOTE OFFICIEL BELGE
+                </span>
+                <h2 className="text-2xl font-bold uppercase tracking-tight text-white leading-tight">
+                  Edouard Godfroid
+                </h2>
+                <span className="text-xs font-mono text-[#94a3b8] block mt-0.5">
+                  Surnommé « Doudou » &bull; Né le 05/01/2012 (Charleroi)
+                </span>
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-white leading-tight">
-                La Vitesse dans les Gènes depuis ses 4 Ans
-              </h2>
+              <div className="grid grid-cols-2 gap-2 font-mono text-[11px] pt-1">
+                <div className="p-2 border border-[#1e293b] bg-[#07090e]">
+                  <span className="text-[#64748b] text-[9px] block uppercase">Écurie Actuelle</span>
+                  <span className="text-white font-bold">Team Eurokarting</span>
+                </div>
+                <div className="p-2 border border-[#1e293b] bg-[#07090e]">
+                  <span className="text-[#64748b] text-[9px] block uppercase">Piste d&apos;Entraînement</span>
+                  <span className="text-[#e10600] font-bold">Mariembourg</span>
+                </div>
+              </div>
 
               <p className="font-mono text-xs text-[#94a3b8] leading-relaxed">
-                Fils de Michaël Godfroid, Edouard commence dès 4 ans sur le parking de Montigny-le-Tilleul.
-                Formé au Karting des Fagnes à Mariembourg par Jonathan Dhaese, il intègre le Team Eurokarting
-                et s&apos;impose comme une référence incontournable de la génération montante.
+                Fils de Michaël Godfroid, Edouard prend son premier volant à 4 ans à Montigny-le-Tilleul.
+                Formé par Jonathan Dhaese, il concrétise son talent en décrochant le titre suprême en Benelux.
               </p>
             </div>
           </div>
 
           <div className="pt-3 border-t border-[#1e293b] flex items-center justify-between font-mono text-xs text-[#64748b]">
-            <span>NÉ LE : 05 JANVIER 2012</span>
-            <span>ORIGINE : CHARLEROI (BELGIQUE)</span>
-            <span className="text-[#e10600] font-bold">TEAM EUROKARTING</span>
+            <span className="flex items-center gap-1.5 text-white">
+              <CheckCircle2 className="w-3.5 h-3.5 text-[#e10600]" />
+              HOMOLOGUÉ CIK-FIA MINI / JUNIOR
+            </span>
+            <span className="text-[#e10600] font-bold">KART #105</span>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-          SECTEUR 2 : PALMARÈS & TITRE DE CHAMPION (~40% Scroll)
+          SECTEUR 2 : LIVE TIMING BOARD OFFICIEL GRAND PRIX (~40% Scroll)
           ========================================================= */}
       <section className="relative min-h-screen flex items-center justify-end px-6 md:px-16 z-20 pointer-events-none">
-        <div className="max-w-lg space-y-4 pointer-events-auto bg-[#0c1017]/95 border-l-4 border-l-[#e10600] border-y border-r border-[#1b2533] p-6 backdrop-blur-md shadow-2xl">
-          <div className="font-mono text-[11px] text-[#e10600] tracking-widest uppercase flex items-center gap-2 font-bold">
-            <Trophy className="w-3.5 h-3.5" />
-            <span>PALMARÈS &bull; LE CHEMIN VERS LE TITRE</span>
+        <div className="max-w-xl w-full space-y-4 pointer-events-auto bg-[#0c1017]/95 border border-[#1e293b] p-6 backdrop-blur-md shadow-2xl font-mono">
+          {/* Header Timing Screen */}
+          <div className="flex items-center justify-between border-b border-[#1e293b] pb-3 text-xs">
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 rounded-full bg-[#e10600] animate-pulse" />
+              <span className="text-white font-bold tracking-wider">OFFICIAL TIMING BOARD</span>
+            </div>
+            <span className="text-[#e10600] font-bold">IAME SERIES BENELUX</span>
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-white">
-            Palmarès Officiel Doudou Racing
-          </h2>
+          <div>
+            <span className="text-[10px] text-[#64748b] uppercase tracking-widest block">HISTORIQUE DES CHRONOS</span>
+            <h2 className="text-2xl font-bold uppercase tracking-tight text-white font-sans">
+              Palmarès & Temps de Qualification
+            </h2>
+          </div>
 
-          <div className="divide-y divide-[#1e293b] border-y border-[#1e293b] font-mono text-xs">
-            {trophies.map((t, idx) => (
-              <div key={idx} className="py-2.5 flex items-center justify-between gap-3">
-                <div>
-                  <span className="text-white font-bold block">{t.title}</span>
-                  <span className="text-[10px] text-[#64748b]">{t.org} &bull; {t.track}</span>
-                </div>
-                <div className="text-right shrink-0">
-                  <span className="text-[#e10600] font-bold block">{t.year}</span>
-                  <span className="text-[9px] px-1.5 py-0.5 bg-[#e10600]/15 text-[#e10600] border border-[#e10600]/30 font-bold">
-                    {t.badge}
-                  </span>
-                </div>
-              </div>
-            ))}
+          {/* TABLEAU GRAND PRIX */}
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs border-collapse">
+              <thead>
+                <tr className="border-b border-[#1e293b] text-[9px] text-[#64748b] uppercase">
+                  <th className="py-2">POS / AN</th>
+                  <th className="py-2">ÉPREUVE</th>
+                  <th className="py-2 text-center">S1</th>
+                  <th className="py-2 text-center">S2</th>
+                  <th className="py-2 text-right">ÉCART</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-[#1e293b]">
+                {trophies.map((t, idx) => (
+                  <tr key={idx} className="hover:bg-[#111824]/50 transition-colors">
+                    <td className="py-2.5 font-bold">
+                      <span className="text-[#e10600] mr-1.5 font-black">{t.year}</span>
+                      <span className="text-[9px] px-1 py-0.5 bg-[#e10600]/15 text-[#e10600] border border-[#e10600]/30 font-bold">
+                        {t.badge}
+                      </span>
+                    </td>
+                    <td className="py-2.5">
+                      <span className="text-white font-bold block">{t.title}</span>
+                      <span className="text-[10px] text-[#64748b]">{t.track}</span>
+                    </td>
+                    <td className="py-2.5 text-center text-[#94a3b8]">{t.s1}</td>
+                    <td className="py-2.5 text-center text-[#94a3b8]">{t.s2}</td>
+                    <td className="py-2.5 text-right font-black text-white">{t.gap}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
           {/* Citation de saison */}
-          <div className="pt-2 border-t border-[#1e293b] font-mono text-[11px] text-[#94a3b8]">
-            <Quote className="w-3.5 h-3.5 text-[#e10600] inline mr-1" />
-            &laquo; Je ne perds jamais, soit je gagne, soit j&apos;apprends. &raquo; — Nelson Mandela
+          <div className="pt-3 border-t border-[#1e293b] text-[11px] text-[#94a3b8] flex items-center justify-between">
+            <div>
+              <Quote className="w-3.5 h-3.5 text-[#e10600] inline mr-1" />
+              &laquo; Je ne perds jamais, soit je gagne, soit j&apos;apprends. &raquo;
+            </div>
+            <span className="text-[10px] text-white font-bold">— Nelson Mandela</span>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-          SECTEUR 3 : LA MACHINE DE COURSE & ACTION EN PISTE (~60% Scroll)
+          SECTEUR 3 : FICHE HOMOLOGATION DE COURSE (~60% Scroll)
           ========================================================= */}
       <section className="relative min-h-screen flex items-center justify-start px-6 md:px-16 z-20 pointer-events-none">
-        <div className="max-w-xl pointer-events-auto bg-[#0c1017]/95 border-l-4 border-l-[#2563eb] border-y border-r border-[#1b2533] p-6 backdrop-blur-md shadow-2xl space-y-4">
+        <div className="max-w-xl w-full pointer-events-auto bg-[#0c1017]/95 border border-[#1e293b] p-6 backdrop-blur-md shadow-2xl space-y-4 font-mono">
+          <div className="flex items-center justify-between border-b border-[#1e293b] pb-3 text-xs">
+            <span className="text-[#2563eb] font-bold flex items-center gap-1.5">
+              <Cpu className="w-4 h-4" />
+              HOMOLOGATION TECHNIQUE N°105
+            </span>
+            <span className="text-[#64748b]">EUROKARTING ATELIER</span>
+          </div>
+
           <div className="flex flex-col sm:flex-row gap-5 items-center">
-            {/* PHOTO D'ACTION RÉELLE D'EDOUARD AU ROUND 5 DE GENK */}
+            {/* PHOTO D'ACTION DE GENK */}
             <div className="relative w-full sm:w-44 h-36 sm:h-44 shrink-0 border border-[#1e293b] bg-[#07090e] overflow-hidden group">
               <Image
                 src="/doudou-action-genk.jpg"
@@ -244,23 +307,17 @@ export default function HomePage() {
                 className="object-cover contrast-115 group-hover:scale-105 transition-all duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-transparent opacity-70" />
-              <div className="absolute top-1.5 left-2 bg-[#2563eb] text-white font-mono font-bold text-[9px] px-1.5 py-0.5 uppercase">
-                GENK HOME OF CHAMPIONS
+              <div className="absolute top-1.5 left-2 bg-[#2563eb] text-white text-[9px] px-1.5 py-0.5 uppercase font-bold">
+                GENK RD 05
               </div>
             </div>
 
-            {/* SPÉCIFICATIONS TECHNIQUES DE LA CATÉGORIE */}
+            {/* SPÉCIFICATIONS TECHNIQUES */}
             <div className="space-y-2 flex-1">
-              <div className="font-mono text-[11px] text-[#2563eb] tracking-widest uppercase flex items-center gap-2 font-bold">
-                <Zap className="w-3.5 h-3.5" />
-                <span>CHÂSSIS &bull; IAME SERIES BENELUX & JUNIOR</span>
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-white leading-tight">
+              <h2 className="text-2xl font-bold uppercase tracking-tight text-white font-sans leading-tight">
                 Précision Millimétrée à 16 000 Tr/min
               </h2>
-
-              <p className="font-mono text-xs text-[#94a3b8] leading-relaxed">
+              <p className="text-xs text-[#94a3b8] leading-relaxed">
                 Après le titre national en Mini, Edouard prépare l&apos;accession en catégorie Junior.
                 Un matériel affûté par le Team Eurokarting, des pneumatiques Komet ultra-tendres
                 et des entraînements intensifs jusqu&apos;à deux fois par semaine.
@@ -268,45 +325,53 @@ export default function HomePage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 font-mono text-xs pt-1">
-            <div className="p-2.5 border border-[#1e293b] bg-[#07090e]">
-              <span className="text-[#64748b] text-[9px] block uppercase">Châssis Officiel</span>
-              <span className="text-sm font-bold text-white">Eurokarting Racing</span>
+          {/* HOTSPOTS TECHNIQUES DU KART */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 text-xs pt-1">
+            <div className="p-2 border border-[#1e293b] bg-[#07090e]">
+              <span className="text-[#64748b] text-[9px] block uppercase">Châssis</span>
+              <span className="text-sm font-bold text-white">Eurokarting 28mm</span>
             </div>
-            <div className="p-2.5 border border-[#1e293b] bg-[#07090e]">
-              <span className="text-[#64748b] text-[9px] block uppercase">Motorisation</span>
+            <div className="p-2 border border-[#1e293b] bg-[#07090e]">
+              <span className="text-[#64748b] text-[9px] block uppercase">Moteur</span>
               <span className="text-sm font-bold text-[#2563eb]">IAME Parilla X30</span>
+            </div>
+            <div className="p-2 border border-[#1e293b] bg-[#07090e] col-span-2 sm:col-span-1">
+              <span className="text-[#64748b] text-[9px] block uppercase">Télémétrie</span>
+              <span className="text-sm font-bold text-[#e10600]">MyChron 5S 2T</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-          SECTEUR 4 : CHRONO & POLE RECORD DU TOUR (~80% Scroll)
+          SECTEUR 4 : TÉLÉMÉTRIE & CHRONO DU TOUR RECORD (~80% Scroll)
           ========================================================= */}
       <section className="relative min-h-screen flex items-center justify-end px-6 md:px-16 z-20 pointer-events-none">
-        <div className="max-w-lg space-y-4 pointer-events-auto bg-[#0c1017]/95 border-l-4 border-l-[#e10600] border-y border-r border-[#1b2533] p-6 backdrop-blur-md shadow-2xl">
-          <div className="font-mono text-[11px] text-[#e10600] tracking-widest uppercase flex items-center gap-2 font-bold">
-            <Flag className="w-3.5 h-3.5" />
-            <span>TÉLÉMÉTRIE &bull; TOUR CHRONO OFFICIEL</span>
+        <div className="max-w-lg w-full space-y-4 pointer-events-auto bg-[#0c1017]/95 border border-[#1e293b] p-6 backdrop-blur-md shadow-2xl font-mono">
+          <div className="flex items-center justify-between border-b border-[#1e293b] pb-3 text-xs">
+            <span className="text-[#e10600] font-bold flex items-center gap-2">
+              <Activity className="w-4 h-4" />
+              LIVE TELEMETRY ACQUISITION
+            </span>
+            <span className="text-[#64748b]">LAP RECORD</span>
           </div>
 
-          <h2 className="text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white">
+          <h2 className="text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white font-sans">
             00:54.108 &bull; POLE POSITION
           </h2>
 
-          <p className="font-mono text-xs text-[#94a3b8] leading-relaxed">
+          <p className="text-xs text-[#94a3b8] leading-relaxed">
             Chaque millième de seconde est traqué par acquisition de données Alfano / Unipro au tour près.
           </p>
 
-          <div className="grid grid-cols-2 gap-2 font-mono text-xs pt-2">
+          <div className="grid grid-cols-2 gap-2 text-xs pt-2">
             {telemetryStats.map((s, idx) => (
-              <div key={idx} className="p-2.5 border border-[#1e293b] bg-[#07090e]">
+              <div key={idx} className="p-3 border border-[#1e293b] bg-[#07090e]">
                 <span className="text-[#64748b] text-[9px] block uppercase">{s.label}</span>
-                <span className="text-xl font-black text-white block mt-0.5">
-                  {s.value} <span className="text-[10px] text-[#e10600]">{s.unit}</span>
+                <span className="text-2xl font-black text-white block mt-0.5 font-sans">
+                  {s.value} <span className="text-[10px] text-[#e10600] font-mono">{s.unit}</span>
                 </span>
-                <span className="text-[#94a3b8] text-[9px]">{s.detail}</span>
+                <span className="text-[#94a3b8] text-[9px] block mt-1">{s.detail}</span>
               </div>
             ))}
           </div>
@@ -317,8 +382,8 @@ export default function HomePage() {
           ACTE 5 : CALENDRIER DES COURSES DU BENELUX & EUROPE (100% Scroll)
           ========================================================= */}
       <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-16 z-20 pointer-events-none py-20">
-        <div className="max-w-2xl space-y-6 pointer-events-auto bg-[#0c1017]/95 border border-[#1b2533] p-8 shadow-2xl backdrop-blur-md">
-          <div className="flex items-center justify-between font-mono text-xs">
+        <div className="max-w-2xl space-y-6 pointer-events-auto bg-[#0c1017]/95 border border-[#1b2533] p-8 shadow-2xl backdrop-blur-md font-mono">
+          <div className="flex items-center justify-between text-xs">
             <span className="text-[#e10600] tracking-widest uppercase flex items-center gap-2 font-bold">
               <Calendar className="w-4 h-4" />
               <span>CHAMPIONNATS IAME BENELUX & EURO SERIES</span>
@@ -326,11 +391,11 @@ export default function HomePage() {
             <span className="text-[#64748b]">SAISON 2026</span>
           </div>
 
-          <h2 className="text-3xl font-bold uppercase tracking-tight text-white">
+          <h2 className="text-3xl font-bold uppercase tracking-tight text-white font-sans">
             Calendrier Officiel des Courses
           </h2>
 
-          <p className="font-mono text-xs text-[#94a3b8]">
+          <p className="text-xs text-[#94a3b8]">
             Suivez Edouard Godfroid sur les plus grands tracés de karting de Belgique, de France et d&apos;Europe.
           </p>
 
@@ -342,14 +407,14 @@ export default function HomePage() {
                     <CircuitMapSVG type={evt.circuitType} className="w-full h-full" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-semibold text-white">{evt.name}</h4>
-                    <span className="text-xs font-mono text-[#94a3b8] block">
+                    <h4 className="text-sm font-semibold text-white font-sans">{evt.name}</h4>
+                    <span className="text-xs text-[#94a3b8] block">
                       {evt.track} ({evt.country})
                     </span>
                   </div>
                 </div>
 
-                <div className="font-mono text-xs flex items-center gap-3">
+                <div className="text-xs flex items-center gap-3">
                   <span className="text-[#64748b] hidden sm:inline">{evt.date}</span>
                   <span
                     className={`px-2.5 py-1 text-[10px] font-bold uppercase ${
@@ -370,10 +435,10 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
-          ACTE 6 : LES PARTENAIRES OFFICIELS DE DOUDOU RACING
+          ACTE 6 : LES PARTENAIRES OFFICIELS & FORMULAIRE ÉCURIE
           ========================================================= */}
       <section className="relative min-h-screen flex flex-col justify-between px-6 md:px-16 py-20 z-20 pointer-events-none">
-        <div className="max-w-3xl mx-auto text-center space-y-6 pt-10 pointer-events-auto">
+        <div className="max-w-4xl mx-auto text-center space-y-6 pt-10 pointer-events-auto">
           <div className="inline-flex items-center gap-2 bg-[#e10600] text-white font-mono font-bold text-xs px-3.5 py-1.5 uppercase">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>PARTENAIRES OFFICIELS &bull; PROGRAMME DOUDOU RACING</span>
@@ -388,34 +453,33 @@ export default function HomePage() {
             ces entreprises font vibrer la passion automobile aux côtés de Doudou.
           </p>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6 text-left">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 pt-6 text-left font-mono">
             {partners.map((sp, idx) => (
               <div key={idx} className="p-4 border border-[#1e293b] bg-[#0c1017]/95 hover:border-[#e10600] transition-colors">
                 <div className="flex items-center justify-between">
-                  <span className="font-mono text-[10px] uppercase text-[#e10600] font-bold block">{sp.tier}</span>
-                  <span className="font-mono text-[9px] text-[#64748b]">{sp.category}</span>
+                  <span className="text-[10px] uppercase text-[#e10600] font-bold block">{sp.tier}</span>
+                  <span className="text-[9px] text-[#64748b]">{sp.category}</span>
                 </div>
-                <span className="font-bold text-base text-white mt-1 block">{sp.name}</span>
-                <p className="font-mono text-[11px] text-[#94a3b8] mt-1">{sp.role}</p>
+                <span className="font-bold text-sm text-white mt-1 block font-sans">{sp.name}</span>
+                <p className="text-[10px] text-[#94a3b8] mt-1">{sp.role}</p>
               </div>
             ))}
           </div>
 
-          <div className="pt-8 flex flex-wrap justify-center gap-4">
+          {/* APPEL À CANDIDATURE & CONTACT */}
+          <div className="pt-8 flex flex-wrap justify-center gap-4 font-mono">
             <Link
               href="/admin"
-              className="px-6 py-3 bg-[#e10600] text-white font-mono font-bold text-xs uppercase tracking-wider hover:bg-[#ff2a2a] transition-colors shadow-lg shadow-red-950/40"
+              className="px-6 py-3 bg-[#e10600] text-white font-bold text-xs uppercase tracking-wider hover:bg-[#ff2a2a] transition-colors shadow-lg shadow-red-950/40"
             >
               Console Back-Office Écurie
             </Link>
             <a
-              href="https://www.doudouracing.be/contact/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-6 py-3 border border-[#1e293b] bg-[#07090e] text-white font-mono text-xs uppercase tracking-wider hover:border-[#2563eb] hover:text-[#2563eb] transition-colors flex items-center gap-2"
+              href="mailto:contact@doudouracing.be?subject=Partenariat%20Saison%202026%20Edouard%20Godfroid"
+              className="px-6 py-3 border border-[#1e293b] bg-[#07090e] text-white text-xs uppercase tracking-wider hover:border-[#2563eb] hover:text-[#2563eb] transition-colors flex items-center gap-2"
             >
-              <span>Rejoindre l&apos;Aventure Partenaires</span>
-              <Download className="w-4 h-4" />
+              <Mail className="w-4 h-4 text-[#2563eb]" />
+              <span>Devenir Partenaire Officiel</span>
             </a>
           </div>
         </div>
