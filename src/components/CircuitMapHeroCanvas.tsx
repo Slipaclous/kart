@@ -96,7 +96,7 @@ export default function CircuitMapHeroCanvas() {
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
-    // 1. CRÉATION D'UNE TEXTURE D'ASPHALTE PROCÉDURALE OFFSCREEN (HAUTE PERFORMANCE)
+    // 1. CRÉATION D'UNE TEXTURE D'ASPHALTE PROCÉDURALE OFFSCREEN
     const patternCanvas = document.createElement("canvas");
     patternCanvas.width = 64;
     patternCanvas.height = 64;
@@ -106,7 +106,6 @@ export default function CircuitMapHeroCanvas() {
     if (pctx) {
       pctx.fillStyle = "#090d14";
       pctx.fillRect(0, 0, 64, 64);
-      // Bruit minéral d'asphalte
       for (let i = 0; i < 400; i++) {
         const x = Math.random() * 64;
         const y = Math.random() * 64;
@@ -122,19 +121,19 @@ export default function CircuitMapHeroCanvas() {
 
     // 2. TRACÉ FIDÈLE DU KARTING DES FAGNES (MARIEMBOURG 1 366 M)
     const rawWaypoints = [
-      { x: 220, y: 760 }, // Ligne des stands
+      { x: 220, y: 760 },
       { x: 220, y: 540 },
       { x: 220, y: 360 },
-      { x: 250, y: 230 }, // Courbe rapide 1
+      { x: 250, y: 230 },
       { x: 340, y: 150 },
       { x: 480, y: 130 },
       { x: 680, y: 130 },
       { x: 840, y: 150 },
-      { x: 940, y: 220 }, // Épingle Est
+      { x: 940, y: 220 },
       { x: 970, y: 320 },
       { x: 920, y: 420 },
       { x: 790, y: 450 },
-      { x: 660, y: 440 }, // Portion sinueuse du bois
+      { x: 660, y: 440 },
       { x: 550, y: 380 },
       { x: 500, y: 290 },
       { x: 520, y: 220 },
@@ -142,10 +141,10 @@ export default function CircuitMapHeroCanvas() {
       { x: 720, y: 220 },
       { x: 770, y: 300 },
       { x: 740, y: 400 },
-      { x: 640, y: 500 }, // Descente vers stadium
+      { x: 640, y: 500 },
       { x: 570, y: 600 },
       { x: 570, y: 700 },
-      { x: 630, y: 780 }, // Raccordement et parabole sud
+      { x: 630, y: 780 },
       { x: 740, y: 810 },
       { x: 870, y: 840 },
       { x: 930, y: 900 },
@@ -222,7 +221,6 @@ export default function CircuitMapHeroCanvas() {
     let cameraY = 600;
     let cameraZoom = 1;
 
-    // Particules dynamiques projetées par les pneumatiques (Gomme chaude / poussière de frein)
     const particles: { x: number; y: number; vx: number; vy: number; life: number; maxLife: number; color: string }[] = [];
 
     const handleScroll = () => {
@@ -253,8 +251,6 @@ export default function CircuitMapHeroCanvas() {
       const currentIdx = Math.min(Math.floor(smoothProgress * (totalPts - 1)), totalPts - 1);
       const kart = sampledPoints[currentIdx] || sampledPoints[0];
 
-      // Calcul dynamique de la vitesse selon la courbure du virage
-      // (Ligne droite = 128 km/h, épingle = 68-72 km/h)
       let activeSpeed = 120;
       for (let i = 0; i < checkpoints.length; i++) {
         if (smoothProgress >= checkpoints[i].t - 0.12) {
@@ -262,9 +258,18 @@ export default function CircuitMapHeroCanvas() {
         }
       }
 
-      // 3. CINÉMATIQUE CAMÉRA : RECUL FOV SELON LA VITESSE
-      // À 128 km/h le FOV s'ouvre (zoom diminue), à 68 km/h la caméra se rapproche
-      const targetZoom = (Math.min(width, height) / 820) * (activeSpeed > 100 ? 0.94 : 1.05);
+      // GESTION DU RESPONSIVE MOBILE / TABLETTE / DESKTOP
+      const isMobile = width < 768;
+      const isTablet = width >= 768 && width < 1024;
+
+      // Sur mobile : on cale le kart dans le tiers supérieur (28% à 32% de la hauteur)
+      // pour que le contenu en dessous ne le masque JAMAIS.
+      const focalCenterX = width / 2;
+      const focalCenterY = isMobile ? height * 0.30 : isTablet ? height * 0.40 : height / 2;
+
+      // Échelle adaptée selon la largeur
+      const baseScaleReference = isMobile ? 620 : isTablet ? 720 : 820;
+      const targetZoom = (Math.min(width, height) / baseScaleReference) * (activeSpeed > 100 ? 0.94 : 1.05);
       cameraZoom += (targetZoom - cameraZoom) * 0.05;
 
       cameraX += (kart.x - cameraX) * 0.05;
@@ -273,7 +278,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.clearRect(0, 0, width, height);
 
       ctx.save();
-      ctx.translate(width / 2, height / 2);
+      ctx.translate(focalCenterX, focalCenterY);
       ctx.scale(cameraZoom, cameraZoom);
       ctx.translate(-cameraX, -cameraY);
 
@@ -294,16 +299,16 @@ export default function CircuitMapHeroCanvas() {
       ctx.stroke();
 
       // =========================================================================
-      // 2. VIBREURS DE CORDE FIA HYPER RÉALISTES AVEC OMBRAGE & TEXTURE
+      // 2. VIBREURS DE CORDE FIA AVEC OMBRAGE & TEXTURE
       // =========================================================================
       const kerbZones: { start: number; end: number; side: number }[] = [
-        { start: 0.18, end: 0.28, side: -1 }, // Virage 1 corde
-        { start: 0.32, end: 0.38, side: 1 },  // Sortie V1 extérieur
-        { start: 0.40, end: 0.48, side: -1 }, // Épingle Est
-        { start: 0.50, end: 0.56, side: 1 },  // Chicane bois gauche
-        { start: 0.57, end: 0.63, side: -1 }, // Chicane bois droite
-        { start: 0.72, end: 0.80, side: -1 }, // Parabolique sud corde
-        { start: 0.82, end: 0.88, side: 1 },  // Parabolique sortie
+        { start: 0.18, end: 0.28, side: -1 },
+        { start: 0.32, end: 0.38, side: 1 },
+        { start: 0.40, end: 0.48, side: -1 },
+        { start: 0.50, end: 0.56, side: 1 },
+        { start: 0.57, end: 0.63, side: -1 },
+        { start: 0.72, end: 0.80, side: -1 },
+        { start: 0.82, end: 0.88, side: 1 },
       ];
 
       kerbZones.forEach((zone) => {
@@ -311,7 +316,6 @@ export default function CircuitMapHeroCanvas() {
         const endIdx = Math.floor(zone.end * totalPts);
         const offset = 31 * zone.side;
 
-        // Ombrage de bord de vibreur pour donner du relief 3D
         ctx.save();
         ctx.beginPath();
         for (let i = startIdx; i <= endIdx; i++) {
@@ -325,7 +329,6 @@ export default function CircuitMapHeroCanvas() {
         ctx.strokeStyle = "rgba(0, 0, 0, 0.4)";
         ctx.stroke();
 
-        // Vibreur bicolore rouge & blanc FIA
         ctx.beginPath();
         for (let i = startIdx; i <= endIdx; i++) {
           const pt = sampledPoints[i];
@@ -353,17 +356,15 @@ export default function CircuitMapHeroCanvas() {
       ctx.lineWidth = 60;
       ctx.stroke();
 
-      // Dépôt de gomme de trajectoire sombre (Racing Groove)
       buildCircuitPath();
       ctx.strokeStyle = "rgba(4, 6, 10, 0.85)";
       ctx.lineWidth = 42;
       ctx.stroke();
 
       // =========================================================================
-      // 4. LIMITES DE PISTE CHIRURGICALES (LIGNES BLANCHES FIA CONTINUES)
+      // 4. LIMITES DE PISTE CONTINUES (FIA)
       // =========================================================================
       ctx.save();
-      // Ligne gauche
       ctx.beginPath();
       for (let i = 0; i < totalPts; i++) {
         const p = sampledPoints[i];
@@ -377,7 +378,6 @@ export default function CircuitMapHeroCanvas() {
       ctx.strokeStyle = "#384556";
       ctx.stroke();
 
-      // Ligne droite
       ctx.beginPath();
       for (let i = 0; i < totalPts; i++) {
         const p = sampledPoints[i];
@@ -393,7 +393,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.restore();
 
       // =========================================================================
-      // 5. DAMIER DE DÉPART DE MARIEMBOURG (STATIONS STANDS)
+      // 5. DAMIER DE DÉPART DE MARIEMBOURG
       // =========================================================================
       ctx.save();
       ctx.translate(220, 740);
@@ -408,7 +408,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.restore();
 
       // =========================================================================
-      // 6. TRAJECTOIRE CHRONO D'ÉDOUARD (RACING LINE NÉON PROGRESSIVE)
+      // 6. TRAJECTOIRE CHRONO D'ÉDOUARD AU SCROLL
       // =========================================================================
       const passedPtsCount = Math.floor(smoothProgress * totalPts);
       if (passedPtsCount > 1) {
@@ -429,7 +429,7 @@ export default function CircuitMapHeroCanvas() {
       }
 
       // =========================================================================
-      // 7. PARTICULES D'ACCÉLÉRATION & ABRASION GOMME
+      // 7. PARTICULES D'ACCÉLÉRATION
       // =========================================================================
       if (Math.random() < 0.35 && passedPtsCount > 5) {
         const backAngle = kart.angle + Math.PI;
@@ -444,7 +444,6 @@ export default function CircuitMapHeroCanvas() {
         });
       }
 
-      // Mise à jour et rendu des particules
       for (let i = particles.length - 1; i >= 0; i--) {
         const p = particles[i];
         p.x += p.vx;
@@ -468,13 +467,11 @@ export default function CircuitMapHeroCanvas() {
       ctx.translate(kart.x, kart.y);
       ctx.rotate(kart.angle + Math.PI / 2);
 
-      // Ombre portée aérodynamique
       ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
       ctx.beginPath();
       ctx.ellipse(0, 3, 19, 23, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Halo sillage propulseur
       const trailGlow = ctx.createRadialGradient(0, 14, 0, 0, 14, 14);
       trailGlow.addColorStop(0, "rgba(225, 6, 0, 0.45)");
       trailGlow.addColorStop(1, "rgba(225, 6, 0, 0)");
@@ -483,7 +480,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.arc(0, 14, 14, 0, Math.PI * 2);
       ctx.fill();
 
-      // A. CHÂSSIS TUBULAIRE CHROMOLYBDE
+      // Châssis
       ctx.strokeStyle = "#334155";
       ctx.lineWidth = 1.8;
       ctx.beginPath();
@@ -497,17 +494,15 @@ export default function CircuitMapHeroCanvas() {
       ctx.lineTo(12, -10);
       ctx.stroke();
 
-      // B. LES 4 PNEUS DE COMPÉTITION SLICK KOMET
+      // Roues
       const drawWheel = (wx: number, wy: number, w: number, h: number) => {
         ctx.fillStyle = "#080c14";
         ctx.strokeStyle = "#1e293b";
         ctx.lineWidth = 0.8;
         ctx.fillRect(wx - w / 2, wy - h / 2, w, h);
         ctx.strokeRect(wx - w / 2, wy - h / 2, w, h);
-        // Centre de jante magnésium
         ctx.fillStyle = "#b45309";
         ctx.fillRect(wx - w / 4, wy - h / 4, w / 2, h / 2);
-        // Écrou anodisé rouge
         ctx.fillStyle = "#e10600";
         ctx.fillRect(wx - 1, wy - 1, 2, 2);
       };
@@ -517,8 +512,7 @@ export default function CircuitMapHeroCanvas() {
       drawWheel(-18, 13, 8, 13);
       drawWheel(18, 13, 8, 13);
 
-      // C. CARROSSERIE CIK-FIA OFFICIELLE DOUDOU RACING
-      // Spoiler avant profilé rouge
+      // Carrosserie
       ctx.fillStyle = "#e10600";
       ctx.strokeStyle = "#ffffff";
       ctx.lineWidth = 0.8;
@@ -533,7 +527,6 @@ export default function CircuitMapHeroCanvas() {
       ctx.fill();
       ctx.stroke();
 
-      // Pontons latéraux rouges
       ctx.fillStyle = "#e10600";
       ctx.beginPath();
       ctx.moveTo(-14, -6);
@@ -551,7 +544,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.closePath();
       ctx.fill();
 
-      // Porte-numéro naseau avant blanc
+      // Porte-numéro
       ctx.fillStyle = "#ffffff";
       ctx.beginPath();
       ctx.moveTo(-5, -15);
@@ -561,14 +554,13 @@ export default function CircuitMapHeroCanvas() {
       ctx.closePath();
       ctx.fill();
 
-      // Numéro officiel #105
       ctx.fillStyle = "#07090e";
       ctx.font = "900 6.5px monospace";
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       ctx.fillText("105", 0, -9);
 
-      // Volant méplat et bloc MyChron
+      // Volant
       ctx.strokeStyle = "#07090e";
       ctx.lineWidth = 1.8;
       ctx.beginPath();
@@ -577,7 +569,7 @@ export default function CircuitMapHeroCanvas() {
       ctx.fillStyle = "#2563eb";
       ctx.fillRect(-1.5, -3, 3, 1.6);
 
-      // Siège baquet Tillet carbone & pilote casqué
+      // Siège et pilote
       ctx.fillStyle = "#0a0e17";
       ctx.strokeStyle = "#334155";
       ctx.lineWidth = 0.8;
@@ -586,13 +578,11 @@ export default function CircuitMapHeroCanvas() {
       ctx.fill();
       ctx.stroke();
 
-      // Combinaison Alpinestars d'Edouard Godfroid
       ctx.fillStyle = "#e10600";
       ctx.beginPath();
       ctx.ellipse(0, 4.5, 5, 3.2, 0, 0, Math.PI * 2);
       ctx.fill();
 
-      // Casque FIA officiel blanc avec visière cobalt
       ctx.fillStyle = "#ffffff";
       ctx.strokeStyle = "#07090e";
       ctx.lineWidth = 0.8;
@@ -606,7 +596,6 @@ export default function CircuitMapHeroCanvas() {
       ctx.arc(0, 2.5, 2, 0, Math.PI * 2);
       ctx.fill();
 
-      // Visière irisée
       ctx.strokeStyle = "#2563eb";
       ctx.lineWidth = 1.6;
       ctx.lineCap = "round";
@@ -655,7 +644,7 @@ export default function CircuitMapHeroCanvas() {
   return (
     <div className="fixed inset-0 pointer-events-none z-10 overflow-hidden select-none">
       {/* 1. LAYER DE FOND : SUBTILE TEXTURE DE PISTE */}
-      <div className="absolute inset-0 w-full h-full opacity-20">
+      <div className="absolute inset-0 w-full h-full opacity-15 md:opacity-20">
         <Image
           src="/track-action.jpg"
           alt="Atmosphère de piste karting"
@@ -673,8 +662,8 @@ export default function CircuitMapHeroCanvas() {
         style={{ willChange: "transform" }}
       />
 
-      {/* 3. RADAR CIRCUIT MINI-MAP FIXE (BAS GAUCHE) */}
-      <div className="absolute bottom-6 left-6 md:left-16 pointer-events-auto bg-[#0b0f17]/95 border border-[#1e293b] p-3 backdrop-blur-md shadow-2xl max-w-[200px] hidden sm:block font-mono">
+      {/* 3. RADAR CIRCUIT MINI-MAP FIXE (DESKTOP SEULEMENT POUR NE PAS ENCOMBRER LE MOBILE) */}
+      <div className="absolute bottom-6 left-6 md:left-16 pointer-events-auto bg-[#0b0f17]/95 border border-[#1e293b] p-3 backdrop-blur-md shadow-2xl max-w-[200px] hidden md:block font-mono">
         <div className="flex items-center justify-between text-[10px] text-[#94a3b8] mb-1">
           <span>MINI-MAP</span>
           <span className="text-[#e10600] font-bold">1 366 M</span>
@@ -701,28 +690,28 @@ export default function CircuitMapHeroCanvas() {
         </div>
       </div>
 
-      {/* 4. TÉLÉMÉTRIE VITESSE & RAPPORT EN TEMPS RÉEL (HAUT DROITE) */}
-      <div className="absolute top-20 right-6 md:right-16 pointer-events-auto bg-[#0b0f17]/95 border border-[#1e293b] p-4 backdrop-blur-md shadow-2xl font-mono max-w-[240px] w-full">
-        <div className="flex items-center justify-between border-b border-[#1e293b] pb-2 mb-2 text-[10px]">
-          <span className="text-[#e10600] font-bold flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-[#e10600] animate-pulse" />
-            LIVE TELEMETRY
+      {/* 4. TÉLÉMÉTRIE VITESSE ADAPTATIVE (BANDEAU ULTRA COMPACT SUR MOBILE, CADRAN SUR DESKTOP) */}
+      <div className="absolute top-16 md:top-20 right-4 md:right-16 pointer-events-auto bg-[#0b0f17]/95 border border-[#1e293b] p-2.5 md:p-4 backdrop-blur-md shadow-2xl font-mono max-w-[180px] md:max-w-[240px] w-full">
+        <div className="flex items-center justify-between border-b border-[#1e293b] pb-1.5 md:pb-2 mb-1.5 md:mb-2 text-[9px] md:text-[10px]">
+          <span className="text-[#e10600] font-bold flex items-center gap-1">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#e10600] animate-pulse" />
+            TELEMETRY
           </span>
           <span className="text-white font-bold">{hudData.gear}</span>
         </div>
 
         <div className="grid grid-cols-2 gap-2">
           <div>
-            <span className="text-[#64748b] text-[9px] block uppercase">Vitesse</span>
-            <span className="text-3xl font-black text-white font-sans">{hudData.speed}</span>
+            <span className="text-[#64748b] text-[8px] md:text-[9px] block uppercase">Vitesse</span>
+            <span className="text-xl md:text-3xl font-black text-white font-sans leading-none">{hudData.speed}</span>
           </div>
           <div>
-            <span className="text-[#64748b] text-[9px] block uppercase">Force G</span>
-            <span className="text-3xl font-black text-[#e10600] font-sans">{hudData.gForce}</span>
+            <span className="text-[#64748b] text-[8px] md:text-[9px] block uppercase">G-Force</span>
+            <span className="text-xl md:text-3xl font-black text-[#e10600] font-sans leading-none">{hudData.gForce}</span>
           </div>
         </div>
 
-        <div className="mt-2 pt-2 border-t border-[#1e293b] text-[10px] text-[#94a3b8] leading-tight">
+        <div className="mt-1.5 md:mt-2 pt-1.5 md:pt-2 border-t border-[#1e293b] text-[8px] md:text-[10px] text-[#94a3b8] leading-tight hidden sm:block truncate">
           {hudData.sub}
         </div>
       </div>
