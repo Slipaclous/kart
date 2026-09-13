@@ -1,22 +1,22 @@
 import Link from "next/link";
 import Image from "next/image";
-import { Download, ChevronDown, Award, Zap, Disc3, Compass, Trophy, Calendar, Flag, User, ShieldCheck } from "lucide-react";
+import { Download, ChevronDown, Award, Zap, Disc3, Compass, Trophy, Calendar, Flag, User, ShieldCheck, Quote } from "lucide-react";
 import CircuitMapHeroCanvas from "@/components/CircuitMapHeroCanvas";
 import CircuitMapSVG from "@/components/CircuitMapSVG";
 
 export default function HomePage() {
   const telemetryStats = [
-    { label: "RÉGIME MOTEUR", value: "15 200", unit: "TR/MIN", detail: "TM Racing 125cc à boîte séquentielle" },
-    { label: "0 À 100 KM/H", value: "3.1 s", unit: "DÉPART ARRÊTÉ", detail: "Pneus Vega XM3 Prime" },
-    { label: "GRIP LATÉRAL", value: "2.85 G", unit: "COURBE APEX", detail: "Châssis Birel ART 25CrMo4" },
-    { label: "POIDS TOTAL", value: "175 kg", unit: "AVEC PILOTE", detail: "Poids minimum réglementaire FIA" },
+    { label: "MOTEUR IAME", value: "16 000", unit: "TR/MIN", detail: "IAME X30 125cc à refroidissement liquide" },
+    { label: "0 À 100 KM/H", value: "3.4 s", unit: "DÉPART ARRÊTÉ", detail: "Pneus slick Komet K2M neufs" },
+    { label: "GRIP LATÉRAL", value: "2.75 G", unit: "COURBE APEX", detail: "Châssis Eurokarting Mariembourg" },
+    { label: "POIDS TOTAL", value: "145 kg", unit: "AVEC PILOTE", detail: "Réglementation IAME Series Benelux" },
   ];
 
   const trophies = [
-    { year: "2025", title: "Champion de France KZ2", org: "FFSA Karting", track: "Laval & Varennes", badge: "TITRE NATIONAL" },
-    { year: "2025", title: "Vainqueur WSK Euro Series", org: "WSK Promotion", track: "Sarno (Italie)", badge: "P1 INTERNATIONAL" },
-    { year: "2024", title: "Vice-Champion d'Europe OK-Junior", org: "FIA Karting", track: "Portimao & Genk", badge: "VICE-CHAMPION" },
-    { year: "2023", title: "Champion National Cadet", org: "FFSA Karting", track: "Angerville", badge: "ROOKIE DE L'ANNÉE" },
+    { year: "2023", title: "Champion de Belgique", org: "IAME Series Benelux", track: "Catégorie Mini", badge: "TITRE NATIONAL" },
+    { year: "2022", title: "Vice-Champion Benelux", org: "IAME Series Benelux", track: "Mariembourg & Genk", badge: "PODIUM GÉNÉRAL" },
+    { year: "2021", title: "Top 3 Mini Rookie", org: "IAME Series Benelux & Euro Series", track: "Genk, Mariembourg & Le Mans", badge: "CHALLENGER TOP 3" },
+    { year: "2019", title: "1er Trophée Endurance", org: "BSK Frasnes", track: "Victoire Course d'Endurance", badge: "PREMIER SUCCÈS" },
   ];
 
   const calendarEvents: {
@@ -32,8 +32,8 @@ export default function HomePage() {
   }[] = [
     {
       round: "RD 01",
-      name: "IAME Euro Series - Genk",
-      track: "Karting Genk 'Home of Champions'",
+      name: "IAME Series Benelux - Mariembourg",
+      track: "Karting des Fagnes 'Home of Doudou'",
       country: "BELGIQUE",
       date: "28-30 MARS 2026",
       status: "VICTOIRE P1",
@@ -42,9 +42,9 @@ export default function HomePage() {
     },
     {
       round: "RD 02",
-      name: "Champions of the Future - Portimao",
-      track: "Kartódromo Internacional do Algarve",
-      country: "PORTUGAL",
+      name: "IAME Euro Series - Genk",
+      track: "Karting Genk 'Home of Champions'",
+      country: "BELGIQUE",
       date: "17-19 AVRIL 2026",
       status: "PODIUM P2",
       highlight: false,
@@ -52,9 +52,9 @@ export default function HomePage() {
     },
     {
       round: "RD 03",
-      name: "FIA Karting European Championship",
-      track: "Circuito Internazionale Napoli (Sarno)",
-      country: "ITALIE",
+      name: "IAME Series Benelux - Spa-Francorchamps",
+      track: "Circuit de Spa-Francorchamps Karting",
+      country: "BELGIQUE",
       date: "15-17 MAI 2026",
       status: "PROCHAINE COURSE",
       highlight: true,
@@ -63,9 +63,9 @@ export default function HomePage() {
     },
     {
       round: "RD 04",
-      name: "Rotax Max Euro Trophy",
-      track: "Wackersdorf Prokart Raceland",
-      country: "ALLEMAGNE",
+      name: "Eurocup IAME - Le Mans",
+      track: "Circuit International de Karting du Mans",
+      country: "FRANCE",
       date: "12-14 JUIN 2026",
       status: "CONFIRMÉ",
       highlight: false,
@@ -74,10 +74,12 @@ export default function HomePage() {
   ];
 
   const partners = [
-    { name: "CORSE RACING LAB", tier: "Partenaire Titre", category: "Acquisition de Données & Télémétrie", role: "Optimisation des réglages châssis en temps réel" },
-    { name: "VEGA TYRES MOTORSPORT", tier: "Fournisseur Officiel", category: "Pneumatiques & Trains Roulants", role: "Gommes slicks XM3 Prime homologuées FIA" },
-    { name: "BIREL ART TECHNOLOGY", tier: "Constructeur Châssis", category: "Structure Acier 25CrMo4", role: "Châssis d'usine officiel catégorie KZ" },
-    { name: "UNLEASHED DATA LAB", tier: "Partenaire Performance", category: "Préparation Physique & Data", role: "Biométrie, temps de réaction et cardio 180 bpm" },
+    { name: "CARLIFE CARROSSERIE", tier: "Partenaire Majeur", category: "Soutien Technique & Préparation", role: "Partenaire fidèle de la première heure de Doudou" },
+    { name: "LAURENTY SERVICES", tier: "Partenaire Titre", category: "Groupe Multi-Services & Propreté", role: "Accompagnement du projet sportif Benelux & Europe" },
+    { name: "AFT & ALUMATIC", tier: "Partenaire Industriel", category: "Châssis & Équipements de pointe", role: "Soutien aux compétitions internationales IAME" },
+    { name: "IDEALARME SRL", tier: "Partenaire Sécurité", category: "Protection & Télémétrie", role: "Partenaire officiel de la saison Doudou Racing" },
+    { name: "ENTREPRISE DEREY", tier: "Partenaire Entreprise", category: "Génie Civil & Construction", role: "Engagement pour la jeunesse et le sport automobile" },
+    { name: "FIDUCIAIRE KRZEWINSKI", tier: "Partenaire Conseil", category: "Gestion & Fiscalité Sportive", role: "Structure et accompagnement de carrière" },
   ];
 
   return (
@@ -92,12 +94,12 @@ export default function HomePage() {
             #42
           </span>
           <span className="font-mono tracking-widest text-sm font-bold uppercase text-white group-hover:text-[#e10600] transition-colors">
-            LIAM MOREAU &bull; KZ RACING
+            EDOUARD GODFROID &bull; DOUDOU RACING
           </span>
         </Link>
 
         <div className="flex items-center gap-4 font-mono text-xs">
-          <span className="hidden sm:inline text-[#64748b] tracking-wider">CHAMPION DE FRANCE KZ2 &bull; BIREL ART FACTORY</span>
+          <span className="hidden sm:inline text-[#64748b] tracking-wider">CHAMPION DE BELGIQUE 2023 &bull; TEAM EUROKARTING</span>
           <Link
             href="/admin"
             className="px-3.5 py-1.5 border border-[#1e293b] hover:border-[#e10600] text-[#94a3b8] hover:text-white bg-[#0c1017]/90 transition-all"
@@ -114,20 +116,26 @@ export default function HomePage() {
         <div className="max-w-2xl space-y-6 pt-16 pointer-events-auto">
           <div className="inline-flex items-center gap-2 bg-[#0c1017]/90 border border-[#1b2533] px-3.5 py-1.5 font-mono text-[11px] text-[#e10600]">
             <span className="w-2 h-2 rounded-full bg-[#e10600] animate-ping"></span>
-            <span className="font-bold tracking-wider">PILOTE ESPOIR FIA KARTING &bull; CATÉGORIE REINE KZ</span>
+            <span className="font-bold tracking-wider">CHAMPION DE BELGIQUE DE KARTING &bull; DOUDOU RACING</span>
           </div>
 
           <h1 className="text-6xl sm:text-7xl md:text-9xl font-black uppercase tracking-tighter leading-[0.88] text-white">
-            LIAM <br />
-            <span className="text-[#e10600]">MOREAU</span>
+            EDOUARD <br />
+            <span className="text-[#e10600]">« DOUDOU »</span>
           </h1>
 
           <p className="font-mono text-xs sm:text-sm text-[#94a3b8] leading-relaxed max-w-lg">
-            16 ans, Champion de France KZ2 en titre et engagé sur le Championnat d&apos;Europe FIA Karting.
-            Embarquez à bord du kart #42 pour vivre un tour de qualification en immersion totale.
+            Né en 2012 à Charleroi, Edouard Godfroid est sacré Champion de Belgique en catégorie Mini. 
+            Embarquez à bord du kart #42 pour vivre un tour chrono en immersion totale.
           </p>
 
-          <div className="flex items-center gap-3 font-mono text-xs text-white pt-4">
+          {/* Citation phare */}
+          <div className="border-l-2 border-[#e10600] pl-3 py-1 font-mono text-xs text-[#94a3b8] italic">
+            &laquo; Les sensations fortes ne sont pas dans la Victoire mais dans le combat. &raquo;
+            <span className="block text-[10px] text-white not-italic font-bold mt-0.5">— Michael Schumacher</span>
+          </div>
+
+          <div className="flex items-center gap-3 font-mono text-xs text-white pt-2">
             <ChevronDown className="w-4 h-4 animate-bounce text-[#e10600]" />
             <span className="tracking-widest text-[#94a3b8]">SCROLLEZ POUR SUIVRE LE TOUR CHRONO SUR LA PISTE</span>
           </div>
@@ -135,64 +143,65 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
-          SECTEUR 1 : L'HISTOIRE DU CHAMPION (~20% Scroll)
+          SECTEUR 1 : L'HISTOIRE DE DOUDOU (~20% Scroll)
           ========================================================= */}
       <section className="relative min-h-screen flex items-center justify-start px-6 md:px-16 z-20 pointer-events-none">
         <div className="max-w-xl pointer-events-auto bg-[#0c1017]/95 border-l-4 border-l-[#e10600] border-y border-r border-[#1b2533] p-6 backdrop-blur-md shadow-2xl space-y-4">
           <div className="flex flex-col sm:flex-row gap-5 items-center">
-            {/* PORTRAIT MOTORSPORT OFFICIEL DU PILOTE */}
-            <div className="relative w-28 h-36 sm:w-32 sm:h-40 shrink-0 border border-[#1e293b] bg-[#07090e] overflow-hidden group">
+            {/* PHOTO OFFICIELLE D'EDOUARD GODFROID */}
+            <div className="relative w-32 h-40 shrink-0 border border-[#1e293b] bg-[#07090e] overflow-hidden group">
               <Image
-                src="/driver-hero.jpg"
-                alt="Liam Moreau Pilote Officiel"
+                src="/doudou-hero.png"
+                alt="Edouard Godfroid Doudou Racing"
                 fill
-                className="object-cover object-top contrast-115 grayscale group-hover:grayscale-0 transition-all duration-500"
+                className="object-cover object-top contrast-110 group-hover:scale-105 transition-all duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-transparent opacity-75" />
               <div className="absolute bottom-1.5 left-2 right-2 flex items-center justify-between font-mono text-[9px]">
-                <span className="text-white font-bold tracking-tighter">#42 MOREAU</span>
-                <span className="text-[#e10600] font-black">KZ2</span>
+                <span className="text-white font-bold tracking-tighter">#42 DOUDOU</span>
+                <span className="text-[#e10600] font-black">CHAMPION 2023</span>
               </div>
             </div>
 
-            {/* DÉTAILS BIO */}
+            {/* BIO OFFICIELLE DEPUIS LE SITE */}
             <div className="space-y-2 flex-1">
               <div className="font-mono text-[11px] text-[#e10600] tracking-widest uppercase flex items-center gap-2 font-bold">
                 <User className="w-3.5 h-3.5" />
-                <span>BIO &bull; DE LA PISTE LOCALE À L&apos;EUROPE</span>
+                <span>BIO &bull; DE MONTIGNY-LE-TILLEUL AUX CIRCUITS FIA</span>
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-white leading-tight">
-                La Rage de Vaincre depuis l&apos;Âge de 7 Ans
+                La Vitesse dans les Gènes depuis ses 4 Ans
               </h2>
 
               <p className="font-mono text-xs text-[#94a3b8] leading-relaxed">
-                Débuté en catégorie Minime, Liam a gravi tous les échelons du karting de vitesse. 
-                Aujourd&apos;hui en KZ, il allie rigueur analytique des datas télémétriques et agressivité propre sur la piste.
+                Fils de Michaël Godfroid, Edouard commence dès 4 ans sur le parking de Montigny-le-Tilleul.
+                Formé au Karting des Fagnes à Mariembourg par Jonathan Dhaese, il intègre le Team Eurokarting
+                et s&apos;impose comme une référence incontournable de la génération montante.
               </p>
             </div>
           </div>
 
           <div className="pt-3 border-t border-[#1e293b] flex items-center justify-between font-mono text-xs text-[#64748b]">
-            <span>ÂGE : 16 ANS</span>
-            <span>NATIONALITÉ : FRANÇAISE</span>
-            <span className="text-[#e10600] font-bold">LICENCE FIA INT-B</span>
+            <span>NÉ LE : 05 JANVIER 2012</span>
+            <span>ORIGINE : CHARLEROI (BELGIQUE)</span>
+            <span className="text-[#e10600] font-bold">TEAM EUROKARTING</span>
           </div>
         </div>
       </section>
 
       {/* =========================================================
-          SECTEUR 2 : PALMARÈS & TITRES MAJEURS (~40% Scroll)
+          SECTEUR 2 : PALMARÈS & TITRE DE CHAMPION (~40% Scroll)
           ========================================================= */}
       <section className="relative min-h-screen flex items-center justify-end px-6 md:px-16 z-20 pointer-events-none">
         <div className="max-w-lg space-y-4 pointer-events-auto bg-[#0c1017]/95 border-l-4 border-l-[#e10600] border-y border-r border-[#1b2533] p-6 backdrop-blur-md shadow-2xl">
           <div className="font-mono text-[11px] text-[#e10600] tracking-widest uppercase flex items-center gap-2 font-bold">
             <Trophy className="w-3.5 h-3.5" />
-            <span>PALMARÈS &bull; LES TITRES DU CHAMPION</span>
+            <span>PALMARÈS &bull; LE CHEMIN VERS LE TITRE</span>
           </div>
 
           <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-white">
-            Palmarès Officiel FFSA & FIA
+            Palmarès Officiel Doudou Racing
           </h2>
 
           <div className="divide-y divide-[#1e293b] border-y border-[#1e293b] font-mono text-xs">
@@ -211,54 +220,62 @@ export default function HomePage() {
               </div>
             ))}
           </div>
+
+          {/* Citation de saison */}
+          <div className="pt-2 border-t border-[#1e293b] font-mono text-[11px] text-[#94a3b8]">
+            <Quote className="w-3.5 h-3.5 text-[#e10600] inline mr-1" />
+            &laquo; Je ne perds jamais, soit je gagne, soit j&apos;apprends. &raquo; — Nelson Mandela
+          </div>
         </div>
       </section>
 
       {/* =========================================================
-          SECTEUR 3 : LA MACHINE DE COURSE KZ (~60% Scroll)
+          SECTEUR 3 : LA MACHINE DE COURSE & ACTION EN PISTE (~60% Scroll)
           ========================================================= */}
       <section className="relative min-h-screen flex items-center justify-start px-6 md:px-16 z-20 pointer-events-none">
         <div className="max-w-xl pointer-events-auto bg-[#0c1017]/95 border-l-4 border-l-[#2563eb] border-y border-r border-[#1b2533] p-6 backdrop-blur-md shadow-2xl space-y-4">
           <div className="flex flex-col sm:flex-row gap-5 items-center">
-            {/* PHOTO D'ACTION DE PISTE EN CONDITIONS RÉELLES */}
-            <div className="relative w-full sm:w-44 h-32 sm:h-40 shrink-0 border border-[#1e293b] bg-[#07090e] overflow-hidden group">
+            {/* PHOTO D'ACTION RÉELLE D'EDOUARD AU ROUND 5 DE GENK */}
+            <div className="relative w-full sm:w-44 h-36 sm:h-44 shrink-0 border border-[#1e293b] bg-[#07090e] overflow-hidden group">
               <Image
-                src="/track-action.jpg"
-                alt="Karting en attaque sur vibreur"
+                src="/doudou-action-genk.jpg"
+                alt="Edouard Godfroid en pleine course à Genk"
                 fill
-                className="object-cover contrast-125 grayscale group-hover:grayscale-0 transition-all duration-500"
+                className="object-cover contrast-115 group-hover:scale-105 transition-all duration-500"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-transparent to-transparent opacity-70" />
               <div className="absolute top-1.5 left-2 bg-[#2563eb] text-white font-mono font-bold text-[9px] px-1.5 py-0.5 uppercase">
-                ON TRACK
+                GENK HOME OF CHAMPIONS
               </div>
             </div>
 
-            {/* SPÉCIFICATIONS TECHNIQUES */}
+            {/* SPÉCIFICATIONS TECHNIQUES DE LA CATÉGORIE */}
             <div className="space-y-2 flex-1">
               <div className="font-mono text-[11px] text-[#2563eb] tracking-widest uppercase flex items-center gap-2 font-bold">
                 <Zap className="w-3.5 h-3.5" />
-                <span>LE MONSTRE &bull; BIREL ART CRY30-S16 KZ</span>
+                <span>CHÂSSIS &bull; IAME SERIES BENELUX & JUNIOR</span>
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-bold uppercase tracking-tight text-white leading-tight">
-                50 Ch &bull; Boîte Séquentielle 6
+                Précision Millimétrée à 16 000 Tr/min
               </h2>
 
               <p className="font-mono text-xs text-[#94a3b8] leading-relaxed">
-                Châssis tubulaire 30mm en acier 25CrMo4. Passage des rapports à la volée en 40 ms sans embrayage, 139 km/h à 3 cm du sol.
+                Après le titre national en Mini, Edouard prépare l&apos;accession en catégorie Junior.
+                Un matériel affûté par le Team Eurokarting, des pneumatiques Komet ultra-tendres
+                et des entraînements intensifs jusqu&apos;à deux fois par semaine.
               </p>
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-2 font-mono text-xs pt-1">
             <div className="p-2.5 border border-[#1e293b] bg-[#07090e]">
-              <span className="text-[#64748b] text-[9px] block uppercase">Freinage</span>
-              <span className="text-sm font-bold text-white">3 disques ventilés</span>
+              <span className="text-[#64748b] text-[9px] block uppercase">Châssis Officiel</span>
+              <span className="text-sm font-bold text-white">Eurokarting Racing</span>
             </div>
             <div className="p-2.5 border border-[#1e293b] bg-[#07090e]">
-              <span className="text-[#64748b] text-[9px] block uppercase">Pneumatiques</span>
-              <span className="text-sm font-bold text-[#2563eb]">Vega XM3 Slick</span>
+              <span className="text-[#64748b] text-[9px] block uppercase">Motorisation</span>
+              <span className="text-sm font-bold text-[#2563eb]">IAME Parilla X30</span>
             </div>
           </div>
         </div>
@@ -271,7 +288,7 @@ export default function HomePage() {
         <div className="max-w-lg space-y-4 pointer-events-auto bg-[#0c1017]/95 border-l-4 border-l-[#e10600] border-y border-r border-[#1b2533] p-6 backdrop-blur-md shadow-2xl">
           <div className="font-mono text-[11px] text-[#e10600] tracking-widest uppercase flex items-center gap-2 font-bold">
             <Flag className="w-3.5 h-3.5" />
-            <span>LIGNE DROITE &bull; TEMPS RECORD OFFICIEL</span>
+            <span>TÉLÉMÉTRIE &bull; TOUR CHRONO OFFICIEL</span>
           </div>
 
           <h2 className="text-3xl sm:text-4xl font-bold uppercase tracking-tight text-white">
@@ -279,7 +296,7 @@ export default function HomePage() {
           </h2>
 
           <p className="font-mono text-xs text-[#94a3b8] leading-relaxed">
-            Chaque millième compte. Télémétrie d&apos;acquisition AIM Mychron 5S synchronisée au virage près.
+            Chaque millième de seconde est traqué par acquisition de données Alfano / Unipro au tour près.
           </p>
 
           <div className="grid grid-cols-2 gap-2 font-mono text-xs pt-2">
@@ -297,24 +314,24 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
-          ACTE 5 : CALENDRIER DES PROCHAINS RENDEZ-VOUS (100% Scroll)
+          ACTE 5 : CALENDRIER DES COURSES DU BENELUX & EUROPE (100% Scroll)
           ========================================================= */}
       <section className="relative min-h-screen flex flex-col justify-center px-6 md:px-16 z-20 pointer-events-none py-20">
         <div className="max-w-2xl space-y-6 pointer-events-auto bg-[#0c1017]/95 border border-[#1b2533] p-8 shadow-2xl backdrop-blur-md">
           <div className="flex items-center justify-between font-mono text-xs">
             <span className="text-[#e10600] tracking-widest uppercase flex items-center gap-2 font-bold">
               <Calendar className="w-4 h-4" />
-              <span>CHAMPIONNAT D&apos;EUROPE FIA KARTING</span>
+              <span>CHAMPIONNATS IAME BENELUX & EURO SERIES</span>
             </span>
             <span className="text-[#64748b]">SAISON 2026</span>
           </div>
 
           <h2 className="text-3xl font-bold uppercase tracking-tight text-white">
-            Prochains Rendez-vous en Piste
+            Calendrier Officiel des Courses
           </h2>
 
           <p className="font-mono text-xs text-[#94a3b8]">
-            Retrouvez Liam Moreau sur les tracés les plus redoutés du continent européen.
+            Suivez Edouard Godfroid sur les plus grands tracés de karting de Belgique, de France et d&apos;Europe.
           </p>
 
           <div className="divide-y divide-[#1b2533] border-y border-[#1b2533]">
@@ -353,22 +370,22 @@ export default function HomePage() {
       </section>
 
       {/* =========================================================
-          ACTE 6 : LES SPONSORS & PARTENAIRES OFFICIELS
+          ACTE 6 : LES PARTENAIRES OFFICIELS DE DOUDOU RACING
           ========================================================= */}
       <section className="relative min-h-screen flex flex-col justify-between px-6 md:px-16 py-20 z-20 pointer-events-none">
         <div className="max-w-3xl mx-auto text-center space-y-6 pt-10 pointer-events-auto">
           <div className="inline-flex items-center gap-2 bg-[#e10600] text-white font-mono font-bold text-xs px-3.5 py-1.5 uppercase">
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>PARTENARIATS OFFICIELS &bull; PROGRAMME JEUNES PILOTES 2026</span>
+            <span>PARTENAIRES OFFICIELS &bull; PROGRAMME DOUDOU RACING</span>
           </div>
 
           <h2 className="text-4xl sm:text-6xl font-black uppercase tracking-tight text-white">
-            Ils Soutiennent Liam Moreau.
+            Ils Soutiennent Edouard Godfroid.
           </h2>
 
           <p className="font-mono text-xs sm:text-sm text-[#94a3b8] max-w-xl mx-auto leading-relaxed">
-            Accompagner un jeune champion vers le sport automobile de haut niveau (Formule 4 / FRECA).
-            Découvrez nos partenaires techniques et sponsors majeurs.
+            De ses premières accélérations sur parking jusqu&apos;au sommet du karting belge,
+            ces entreprises font vibrer la passion automobile aux côtés de Doudou.
           </p>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-6 text-left">
@@ -392,10 +409,12 @@ export default function HomePage() {
               Console Back-Office Écurie
             </Link>
             <a
-              href="#"
+              href="https://www.doudouracing.be/contact/"
+              target="_blank"
+              rel="noopener noreferrer"
               className="px-6 py-3 border border-[#1e293b] bg-[#07090e] text-white font-mono text-xs uppercase tracking-wider hover:border-[#2563eb] hover:text-[#2563eb] transition-colors flex items-center gap-2"
             >
-              <span>Dossier Sponsoring 2026 (PDF)</span>
+              <span>Rejoindre l&apos;Aventure Partenaires</span>
               <Download className="w-4 h-4" />
             </a>
           </div>
@@ -403,8 +422,8 @@ export default function HomePage() {
 
         {/* Footer Motorsport */}
         <footer className="w-full border-t border-[#1b2533] pt-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4 font-mono text-xs text-[#64748b] pointer-events-auto">
-          <span>LIAM MOREAU #42 &bull; ATHLÈTE OFFICIEL FIA KARTING &bull; CATÉGORIE REINE KZ</span>
-          <span className="text-[#e10600] font-bold">CHAMPIONNAT D&apos;EUROPE 2026 &bull; SCROLLYTELLING CIRCUIT</span>
+          <span>EDOUARD GODFROID « DOUDOU » &bull; CHAMPION DE BELGIQUE 2023 &bull; TEAM EUROKARTING</span>
+          <span className="text-[#e10600] font-bold">DOUDOURACING.BE &bull; ONBOARD CIRCUIT SCROLLYTELLING</span>
         </footer>
       </section>
     </div>

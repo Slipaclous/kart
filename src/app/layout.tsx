@@ -14,9 +14,9 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LIAM MOREAU #42 — Karting Athlete & Future Motorsport Star",
+  title: "EDOUARD GODFROID « DOUDOU » — Champion de Belgique de Karting",
   description:
-    "Official website of Liam Moreau: Race telemetry, 2026 calendar, championship results, on-board videos and sponsorship dossier.",
+    "Site officiel d'Edouard Godfroid (Doudou Racing) : Champion de Belgique de Karting, palmarès IAME Benelux & Euro Series, calendrier des courses et partenariats.",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
